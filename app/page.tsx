@@ -22,7 +22,7 @@ export default async function Home() {
   const groups = groupByStatus(characters);
 
   return (
-    <main className="flex min-h-screen justify-center bg-neutral-800 px-4 py-6">
+    <main className="flex min-h-screen items-start justify-center bg-neutral-800 px-4 py-6">
       <div className="w-full max-w-md overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/20">
         {/* ---- Header: emblem + live countdown ---- */}
         <header className="bg-neutral-200 px-6 py-8 text-center text-neutral-900">
