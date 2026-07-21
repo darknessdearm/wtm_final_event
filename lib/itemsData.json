@@ -1,0 +1,143 @@
+[
+  {
+    "id": "item-1",
+    "name": "ไฟฉายแทคติคัล",
+    "description": "ไฟฉายกำลังสูงสำหรับส่องพื้นที่มืดและระบุตำแหน่งเป้าหมาย",
+    "imgUrl": "https://m.media-amazon.com/images/I/71mprB2Ac9L.jpg",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-2",
+    "name": "ปืนพก",
+    "description": "อาวุธปืนขนาดพกพา เหมาะสำหรับการต่อสู้ระยะประชิด",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-3",
+    "name": "ปืนลูกซอง",
+    "description": "อาวุธที่มีอานุภาพหยุดยั้งสูง เหมาะสำหรับเป้าหมายระยะใกล้",
+    "imgUrl": "https://www.sportsmansoutdoorsuperstore.com/prodimages/120423-DEFAULT-l.jpg",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": true
+  },
+  {
+    "id": "item-4",
+    "name": "ปืนไรเฟิล",
+    "description": "อาวุธปืนสำหรับยิงระยะกลางถึงไกล",
+    "isOnlyOne": true,
+    "ishidden": true,
+    "isLocked": true
+  },
+  {
+    "id": "item-5",
+    "name": "กระสุน",
+    "description": "กระสุนมาตรฐานสำหรับอาวุธปืน",
+    "isOnlyOne": false,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-6",
+    "name": "แฟลร์",
+    "description": "อุปกรณ์ให้แสงและสร้างความร้อนสำหรับใช้งานในเหตุฉุกเฉิน",
+    "imgUrl": "https://m.media-amazon.com/images/I/71YH7rOkSIL._AC_.jpg",
+    "isOnlyOne": false,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-7",
+    "name": "คบเพลิง",
+    "description": "อุปกรณ์สร้างแสงและเปลวไฟแบบพกพา",
+    "isOnlyOne": false,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-8",
+    "name": "ชุดก่อไฟ",
+    "description": "ชุดอุปกรณ์สำหรับจุดไฟในสภาพแวดล้อมต่าง ๆ",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-9",
+    "name": "มีดสนาม",
+    "description": "มีดอเนกประสงค์สำหรับงานภาคสนาม",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-10",
+    "name": "ขวานเดินป่า",
+    "description": "ใช้ตัดไม้หรือป้องกันตัวในสถานการณ์ฉุกเฉิน",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-11",
+    "name": "เชือก Paracord",
+    "description": "เชือกอเนกประสงค์สำหรับงานเอาตัวรอด",
+    "imgUrl": "https://m.media-amazon.com/images/I/61qP8h31B3L._AC_SL1000_.jpg",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-12",
+    "name": "ชุดปฐมพยาบาล",
+    "description": "อุปกรณ์สำหรับรักษาอาการบาดเจ็บเบื้องต้น",
+    "imgUrl": "https://m.media-amazon.com/images/I/81q1noXZFIL._AC_SL1498_.jpg",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-13",
+    "name": "วิทยุสื่อสาร",
+    "description": "ใช้ติดต่อสื่อสารระหว่างสมาชิกในทีม",
+    "isOnlyOne": true,
+    "ishidden": true,
+    "isLocked": true
+  },
+  {
+    "id": "item-14",
+    "name": "กล้องมองกลางคืน",
+    "description": "ช่วยให้มองเห็นในสภาพแสงน้อย",
+    "isOnlyOne": true,
+    "ishidden": true,
+    "isLocked": true
+  },
+  {
+    "id": "item-15",
+    "name": "เสื้อเกราะกันกระแทก",
+    "description": "ป้องกันการได้รับบาดเจ็บจากกระแทกหรือแรงกระแทก",
+    "isOnlyOne": true,
+    "ishidden": true,
+    "isLocked": true
+  },
+  {
+    "id": "item-16",
+    "name": "ไฟแช็กและไม้ขีดกันน้ำ",
+    "description": "อุปกรณ์ระบุตำแหน่งและนำทาง",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-17",
+    "name": "กระสุนปืนแฟลร์",
+    "description": "อุปกรณ์นำทางแบบไม่ใช้พลังงาน",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  }
+]
