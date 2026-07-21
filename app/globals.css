@@ -301,3 +301,35 @@ body {
   font-weight: 900;
   font-style: italic;
 }
+
+/* ---- End-credits roll (see components/CreditsRoll.tsx) ------------------- */
+/* Restored after a merge dropped these rules. The track holds two identical
+   copies of the cast; scrolling it up by exactly one copy's height (-50%) and
+   looping makes the wrap seamless. */
+@keyframes credits-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-credits {
+  animation: credits-scroll var(--credits-duration, 80s) linear infinite;
+}
+
+/* Respect reduced-motion: drop the animation, hide the duplicate copy, and let
+   the viewport scroll manually instead. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-credits {
+    animation: none;
+    transform: none;
+  }
+  .credits-dup {
+    display: none;
+  }
+  .credits-viewport {
+    overflow-y: auto;
+  }
+}

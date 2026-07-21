@@ -1,27 +1,16 @@
-// Placeholder logo: a plain black circle with the "WTM" wordmark. Drawn inline
-// as SVG so it needs no image asset (and no basePath juggling on GitHub Pages).
-// Swap for the real logo later by dropping an <img> in here.
+// Brand logo, served from /public/logo.svg. On GitHub Pages *project* sites the
+// app is served from /<repo>, so the src needs the configured base path prefix
+// (empty locally). Images are unoptimized (see next.config.mjs), so a plain
+// <img> is the right tool here rather than next/image.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default function Emblem({ className = '' }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      role="img"
-      aria-label="WTM logo"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`${BASE_PATH}/logo.svg`}
+      alt="WTM logo"
       className={className}
-    >
-      <circle cx="50" cy="50" r="48" className="fill-neutral-900" />
-      <text
-        x="50"
-        y="50"
-        textAnchor="middle"
-        dominantBaseline="central"
-        className="fill-neutral-100"
-        fontSize="20"
-        fontWeight="700"
-        letterSpacing="1"
-      >
-        WTM
-      </text>
-    </svg>
+    />
   );
 }
