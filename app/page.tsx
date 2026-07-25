@@ -1,13 +1,12 @@
 import Countdown from '@/components/Countdown';
 import Emblem from '@/components/Emblem';
+import CreditsRoll from '@/components/CreditsRoll';
 import { getCharacters } from '@/lib/firebase';
 import {
-  groupByStatus,
   EVENT_START,
   EVENT_DEADLINE,
   EVENT_WINDOW_LABEL,
   SUBMISSION_FORM_URL,
-  type StatusGroup,
 } from '@/lib/data';
 
 // The three randomised situation categories shown in the dark panel.
@@ -17,45 +16,68 @@ const SITUATIONS = [
   { n: 3, label: 'อาการบาดเจ็บ' },
 ];
 
+// GitHub Pages project sites serve assets under /<repo>; prefix with the
+// configured base path (empty in local dev). Plain CSS url()/img refs don't get
+// this prefix automatically the way next/image does.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default async function Home() {
   const characters = await getCharacters();
-  const groups = groupByStatus(characters);
 
   return (
-    <main className="flex min-h-screen items-start justify-center bg-neutral-800 px-4 py-6">
-      <div className="w-full max-w-md overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/20">
-        {/* ---- Header: emblem + live countdown ---- */}
-        <header className="bg-neutral-200 px-6 py-8 text-center text-neutral-900">
-          <Emblem className="mx-auto h-16 w-16" />
-          <h1 className="mt-4 text-2xl font-bold leading-snug">
+    <main
+      className="flex h-screen flex-col overflow-hidden bg-neutral-900 bg-cover bg-center"
+      style={{ backgroundImage: `url(${BASE_PATH}/assets/noise-bg.svg)` }}
+    >
+      {/* ---- Header: emblem + live countdown ---- */}
+      <header className="bg-neutral-200 px-4 py-8 text-center text-neutral-900 sm:py-10">
+        <div className="mx-auto max-w-2xl">
+          <Emblem className="mx-auto h-16 w-16 sm:h-20 sm:w-20" />
+          <h1 className="mt-4 text-2xl font-bold leading-snug sm:text-3xl">
             <Countdown start={EVENT_START} deadline={EVENT_DEADLINE} />
           </h1>
-          <p className="mt-2 text-xs text-neutral-600">{EVENT_WINDOW_LABEL}</p>
-        </header>
+          <p className="mt-2 text-xs text-neutral-600 sm:text-sm">
+            {EVENT_WINDOW_LABEL}
+          </p>
+        </div>
+      </header>
 
-        {/* ---- Randomised situation panel ---- */}
-        <section className="bg-neutral-900 px-6 py-10 text-center text-neutral-100">
-          <h2 className="text-xl font-medium">สุ่มสถานการณ์</h2>
-          <ol className="mt-4 space-y-1 text-lg">
+      {/* ---- Randomised situation panel ---- */}
+      <section className="px-4 py-8 text-center text-neutral-100 sm:py-12">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-xl font-medium sm:text-2xl">สุ่มสถานการณ์</h2>
+          <ol className="mt-4 space-y-1 text-lg sm:text-xl">
             {SITUATIONS.map((s) => (
               <li key={s.n}>
                 {s.n}. {s.label}
               </li>
             ))}
           </ol>
-        </section>
+        </div>
+      </section>
 
-        {/* ---- Roster: survivors / dead / missing ---- */}
-        <section className="bg-neutral-300 px-5 py-6 text-neutral-900">
-          <h3 className="mb-4 text-sm font-medium">
-            List รายชื่อตัวละคร (ตัวประกอบฉาก)
-          </h3>
+      {/* ---- Roster: end-credits roll — grows to fill the rest of the screen ---- */}
+      <section className="flex min-h-0 flex-1 flex-col bg-neutral-300 px-4 py-6 text-neutral-900 sm:px-6">
+        <div className="mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col">
+          <h3 className="text-sm font-medium sm:text-base">Survived / Dead / Missing List</h3>
+          {/* <p className="mb-3 mt-1 text-xs text-neutral-600">
+            {characters.length} รายชื่อ · เลื่อนแบบเครดิตหนัง (ชี้ค้างเพื่อหยุด)
+          </p> */}
 
-          <div className="grid grid-cols-3 gap-3">
-            {groups.map((group) => (
-              <RosterColumn key={group.status} group={group} />
-            ))}
-          </div>
+          <CreditsRoll characters={characters} className="mt-3 flex-1" />
+
+          {/* Colour legend for the three fates. */}
+          <ul className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] text-neutral-600 sm:text-xs">
+            <li className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" /> รอด
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-red-400" /> ตาย
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-amber-400" /> สาบสูญ
+            </li>
+          </ul>
 
           {/* ---- Submission form button ---- */}
           <a
@@ -66,38 +88,13 @@ export default async function Home() {
           >
             ฟอร์มส่งชื่อตัวละคร พร้อมสถานะ รอด/ตาย/สาบสูญ (Week 3)
           </a>
-        </section>
+        </div>
+      </section>
 
-        {/* ---- Footer ---- */}
-        <footer className="bg-neutral-900 py-4 text-center text-xs font-bold text-neutral-400">
-          footer
-        </footer>
-      </div>
+      {/* ---- Footer ---- */}
+      <footer className="py-4 text-center text-xs font-bold text-neutral-400">
+        footer
+      </footer>
     </main>
-  );
-}
-
-const STATUS_ACCENT: Record<StatusGroup['status'], string> = {
-  survived: 'text-emerald-300',
-  dead: 'text-red-300',
-  missing: 'text-amber-300',
-};
-
-function RosterColumn({ group }: { group: StatusGroup }) {
-  return (
-    <div className="min-h-[180px] rounded bg-neutral-600 p-3 text-white">
-      <p className={`mb-2 text-xs font-medium ${STATUS_ACCENT[group.status]}`}>
-        {group.label}
-      </p>
-      {group.characters.length > 0 ? (
-        <ul className="space-y-1 text-xs leading-relaxed text-neutral-100">
-          {group.characters.map((c) => (
-            <li key={c.id}>{c.name}</li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-xs text-neutral-400">—</p>
-      )}
-    </div>
   );
 }
