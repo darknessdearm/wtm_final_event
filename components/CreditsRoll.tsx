@@ -70,7 +70,9 @@ export default function CreditsRoll({
 
   return (
     <div
-      className={`credits-viewport group relative overflow-hidden rounded-lg bg-neutral-900 ring-1 ring-black/40 ${className}`}
+      tabIndex={0}
+      aria-label="Credits roll"
+      className={`credits-viewport group relative overflow-hidden rounded-lg bg-neutral-900 ring-1 ring-black/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-100/60 ${className}`}
     >
       {/* Cinematic fade at the top and bottom edges. */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-12 bg-gradient-to-b from-neutral-900 to-transparent sm:h-16" />
