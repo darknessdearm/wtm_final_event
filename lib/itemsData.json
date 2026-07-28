@@ -1,9 +1,9 @@
 [
   {
     "id": "item-1",
-    "name": "ไฟฉายแทคติคัล",
-    "description": "ไฟฉายกำลังสูงสำหรับส่องพื้นที่มืดและระบุตำแหน่งเป้าหมาย",
-    "imgUrl": "https://m.media-amazon.com/images/I/71mprB2Ac9L.jpg",
+    "name": "ไฟฉาย",
+    "description": "อุปกรณ์ส่องสว่างแบบพกพา ใช้แบตเตอรี่สำหรับให้แสงในพื้นที่มืด",
+    "imgUrl": "public\\assets\\item\\01.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
@@ -11,131 +11,224 @@
   {
     "id": "item-2",
     "name": "ปืนพก",
-    "description": "อาวุธปืนขนาดพกพา เหมาะสำหรับการต่อสู้ระยะประชิด",
+    "description": "อาวุธปืนขนาดกะทัดรัด พกพาสะดวก เหมาะสำหรับป้องกันตัวในระยะใกล้ มีกระสุนบรรจุอยู่ 1 แม็กซีน  (10 นัด)",
+    "imgUrl": "public\\assets\\item\\02.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-3",
-    "name": "ปืนลูกซอง",
-    "description": "อาวุธที่มีอานุภาพหยุดยั้งสูง เหมาะสำหรับเป้าหมายระยะใกล้",
-    "imgUrl": "https://www.sportsmansoutdoorsuperstore.com/prodimages/120423-DEFAULT-l.jpg",
+    "name": "กระสุนปืนพก",
+    "description": "กระสุนมาตรฐานสำหรับใช้งานกับปืนพกหลากหลายรุ่น จำนวน 1 แม็กซีน มีกระสุนอยู่ 10 นัด",
+    "imgUrl": "public\\assets\\item\\03.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": true
   },
   {
     "id": "item-4",
-    "name": "ปืนไรเฟิล",
-    "description": "อาวุธปืนสำหรับยิงระยะกลางถึงไกล",
+    "name": "ปืนลูกซอง",
+    "description": "อาวุธปืนที่มีอานุภาพสูงในระยะประชิด ยิงออกเป็นลูกปราย มีกระสุนบรรจุอยู่ 2 นัด",
+    "imgUrl": "public\\assets\\item\\04.png",
     "isOnlyOne": true,
     "ishidden": true,
     "isLocked": true
   },
   {
     "id": "item-5",
-    "name": "กระสุน",
-    "description": "กระสุนมาตรฐานสำหรับอาวุธปืน",
+    "name": "กระสุนปืนลูกซอง",
+    "description": "กระสุนสำหรับปืนลูกซอง มีประสิทธิภาพสูงในระยะใกล้ จำนวน 1 กล่อง มีกระสุนอยู่ 4 นัด",
+    "imgUrl": "public\\assets\\item\\05.png",
     "isOnlyOne": false,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-6",
-    "name": "แฟลร์",
-    "description": "อุปกรณ์ให้แสงและสร้างความร้อนสำหรับใช้งานในเหตุฉุกเฉิน",
-    "imgUrl": "https://m.media-amazon.com/images/I/71YH7rOkSIL._AC_.jpg",
+    "name": "ปืนไรเฟิลล่าสัตว์",
+    "description": "ปืนไรเฟิลสำหรับการล่าสัตว์และยิงเป้าระยะไกล ให้ความแม่นยำสูง มีกระสุนบรรจุอยู่ 3 นัด",
+    "imgUrl": "public\\assets\\item\\06.png",
     "isOnlyOne": false,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-7",
-    "name": "คบเพลิง",
-    "description": "อุปกรณ์สร้างแสงและเปลวไฟแบบพกพา",
+    "name": "กระสุนปืนไรเฟิลล่าสัตว์",
+    "description": "กระสุนสำหรับปืนไรเฟิล ให้ความแม่นยำและแรงหยุดยั้งในระยะไกล จำนวน 1 แม็กซีน มีกระสุนอยู่ 5 นัด",
+    "imgUrl": "public\\assets\\item\\07.png",
     "isOnlyOne": false,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-8",
-    "name": "ชุดก่อไฟ",
-    "description": "ชุดอุปกรณ์สำหรับจุดไฟในสภาพแวดล้อมต่าง ๆ",
+    "name": "มีดสนาม",
+    "description": "มีดอเนกประสงค์สำหรับงานกลางแจ้ง ใช้ตัด เชือด หรือเตรียมวัสดุ ",
+    "imgUrl": "public\\assets\\item\\08.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-9",
-    "name": "มีดสนาม",
-    "description": "มีดอเนกประสงค์สำหรับงานภาคสนาม",
+    "name": "วิทยุสื่อสาร",
+    "description": "อุปกรณ์สื่อสารไร้สายสำหรับติดต่อระยะสั้นผ่านคลื่นวิทยุ ",
+    "imgUrl": "public\\assets\\item\\09.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-10",
-    "name": "ขวานเดินป่า",
-    "description": "ใช้ตัดไม้หรือป้องกันตัวในสถานการณ์ฉุกเฉิน",
+    "name": "ชุดก่อไฟ",
+    "description": "อุปกรณ์พื้นฐานสำหรับจุดไฟ ใช้ในการตั้งแคมป์หรือสถานการณ์ฉุกเฉิน ",
+    "imgUrl": "public\\assets\\item\\10.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-11",
-    "name": "เชือก Paracord",
-    "description": "เชือกอเนกประสงค์สำหรับงานเอาตัวรอด",
-    "imgUrl": "https://m.media-amazon.com/images/I/61qP8h31B3L._AC_SL1000_.jpg",
+    "name": "ปืนแฟลร์",
+    "description": "อุปกรณ์ยิงพลุสัญญาณ ใช้ส่งสัญญาณขอความช่วยเหลือหรือระบุตำแหน่ง  มีกระสุนบรรจุอยู่ 1 นัด",
+    "imgUrl": "public\\assets\\item\\11.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-12",
-    "name": "ชุดปฐมพยาบาล",
-    "description": "อุปกรณ์สำหรับรักษาอาการบาดเจ็บเบื้องต้น",
-    "imgUrl": "https://m.media-amazon.com/images/I/81q1noXZFIL._AC_SL1498_.jpg",
+    "name": "กระสุนปืนแฟลร์",
+    "description": "กระสุนพลุสัญญาณสำหรับใช้งานร่วมกับปืนแฟลร์ จำนวน 1 นัด",
+    "imgUrl": "public\\assets\\item\\12.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-13",
-    "name": "วิทยุสื่อสาร",
-    "description": "ใช้ติดต่อสื่อสารระหว่างสมาชิกในทีม",
+    "name": "คบเพลิง",
+    "description": "แหล่งกำเนิดแสงแบบใช้เปลวไฟ เหมาะสำหรับการใช้งานกลางแจ้ง",
+    "imgUrl": "public\\assets\\item\\13.png",
     "isOnlyOne": true,
     "ishidden": true,
     "isLocked": true
   },
   {
     "id": "item-14",
-    "name": "กล้องมองกลางคืน",
-    "description": "ช่วยให้มองเห็นในสภาพแสงน้อย",
+    "name": "ขวานเดินป่า",
+    "description": "ขวานขนาดพกพา ใช้ตัดไม้ ฟืน หรือสิ่งกีดขวาง ",
+    "imgUrl": "public\\assets\\item\\14.png",
     "isOnlyOne": true,
     "ishidden": true,
     "isLocked": true
   },
   {
     "id": "item-15",
-    "name": "เสื้อเกราะกันกระแทก",
-    "description": "ป้องกันการได้รับบาดเจ็บจากกระแทกหรือแรงกระแทก",
+    "name": "ขวดแก้วเปล่า",
+    "description": "ภาชนะแก้วเปล่าที่สามารถนำไปบรรจุของเหลวหรือใช้งานอื่นได้ ",
+    "imgUrl": "public\\assets\\item\\15.png",
     "isOnlyOne": true,
-    "ishidden": true,
-    "isLocked": true
+    "ishidden": false,
+    "isLocked": false
   },
   {
     "id": "item-16",
-    "name": "ไฟแช็กและไม้ขีดกันน้ำ",
-    "description": "อุปกรณ์ระบุตำแหน่งและนำทาง",
+    "name": "ขวดเหล้า",
+    "description": "ขวดบรรจุเครื่องดื่มแอลกอฮอล์ เหมาะสำหรับการเก็บรักษาและพกพา",
+    "imgUrl": "public\\assets\\item\\16.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
   },
   {
     "id": "item-17",
-    "name": "กระสุนปืนแฟลร์",
-    "description": "อุปกรณ์นำทางแบบไม่ใช้พลังงาน",
+    "name": "ชุดปฐมพยาบาลกล่องเล็ก",
+    "description": "ชุดอุปกรณ์ปฐมพยาบาลขนาดกะทัดรัด สำหรับดูแลบาดแผลเบื้องต้น",
+    "imgUrl": "public\\assets\\item\\17.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-18",
+    "name": "ชุดปฐมพยาบาลกล่องใหญ่",
+    "description": "ชุดปฐมพยาบาลที่มีอุปกรณ์ครบครัน สำหรับรับมืออาการบาดเจ็บหลายรูปแบบ",
+    "imgUrl": "public\\assets\\item\\18.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-19",
+    "name": "ขวดแอลกอฮอล์ล้างแผล",
+    "description": "สารฆ่าเชื้อสำหรับทำความสะอาดบาดแผลและอุปกรณ์ปฐมพยาบาล",
+    "imgUrl": "public\\assets\\item\\19.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-20",
+    "name": "เศษผ้า",
+    "description": "ผ้าชิ้นเล็กที่สามารถใช้เช็ดทำความสะอาดหรือพันแผลชั่วคราว",
+    "imgUrl": "public\\assets\\item\\20.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-21",
+    "name": "ถังน้ำมัน",
+    "description": "ภาชนะสำหรับเก็บและขนส่งเชื้อเพลิง มันมีน้ำมันอยู่ประมาณครึ่งถัง",
+    "imgUrl": "public\\assets\\item\\21.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-22",
+    "name": "ไฟแช็ก",
+    "description": "อุปกรณ์จุดไฟแบบพกพา ใช้เชื้อเพลิงก๊าซหรือของเหลว ",
+    "imgUrl": "public\\assets\\item\\22.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-23",
+    "name": "กล่องไม้ขีดไฟ",
+    "description": "กล่องบรรจุไม้ขีดสำหรับจุดไฟ ใช้งานง่ายและพกพาสะดวก ",
+    "imgUrl": "public\\assets\\item\\23.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-24",
+    "name": "ไม้เบสบอล",
+    "description": "อุปกรณ์กีฬาที่ทำจากไม้หรือโลหะ ใช้สำหรับการตีลูกเบสบอล ",
+    "imgUrl": "public\\assets\\item\\24.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-25",
+    "name": "ชะแลงเหล็ก",
+    "description": "เครื่องมือเหล็กสำหรับงัด แงะ หรือยกวัตถุที่มีน้ำหนัก ",
+    "imgUrl": "public\\assets\\item\\25.png",
+    "isOnlyOne": true,
+    "ishidden": false,
+    "isLocked": false
+  },
+  {
+    "id": "item-26",
+    "name": "ไม้หน้าสาม",
+    "description": "ไม้เนื้อแข็งที่ใช้เป็นอุปกรณ์สำหรับงานทั่วไปหรือการป้องกันตัวระยะประชิด",
+    "imgUrl": "public\\assets\\item\\26.png",
     "isOnlyOne": true,
     "ishidden": false,
     "isLocked": false
