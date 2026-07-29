@@ -61,13 +61,22 @@ hydration mismatch.
 
 ### Color tokens
 
-Each token interpolates its scene1 value toward its scene2 value:
+> **Correction (2026-07-29 final fix wave):** the roster table below originally
+> listed invented hex values that did not come from the Figma exports — a
+> `grep -ic` for each of `#3E8E43` / `#FF2D2D` / `#E0A82E` / `#2F5A34` returns 0
+> in both `template/scene1.css` and `template/scene2.css`. It also claimed the
+> roster accents "read identically in both mockups," which is false: `#FF9D00`
+> (lost, scene1) becomes `#CFAC38` (lost, scene2), and the censor bar's
+> background goes from `#446944` (scene1) to `#1E1F1F` (scene2). The values
+> below are corrected against the actual exports; see
+> `app/globals.css` for the live implementation.
+
+Chrome tokens interpolate their scene1 value toward their scene2 value:
 
 ```css
 --c-text:     color-mix(in oklab, #38CF4E calc((1 - var(--decay)) * 100%), #FFFFFF);
 --c-text-dim: color-mix(in oklab, #315933 calc((1 - var(--decay)) * 100%), #B3B3B3);
 --c-glow:     color-mix(in oklab, #20B369 calc((1 - var(--decay)) * 100%), #620202);
---c-censor:   color-mix(in oklab, #2F5A34 calc((1 - var(--decay)) * 100%), #000000);
 --c-rule:     color-mix(in oklab, #38CF4E calc((1 - var(--decay)) * 100%), #FFFFFF);
 ```
 
@@ -76,25 +85,36 @@ Each token interpolates its scene1 value toward its scene2 value:
 | `--c-text` | `#38CF4E` | `#FFFFFF` | countdown, labels, result sentence |
 | `--c-text-dim` | `#315933` | `#B3B3B3` | event tag, captions, event duration |
 | `--c-glow` | `#20B369` | `#620202` | blurred countdown layer |
-| `--c-censor` | `#2F5A34` | `#000000` | redaction bars |
 | `--c-rule` | `#38CF4E` | `#FFFFFF` | dashed frames, hairline separators |
 
-Roster status colors do **not** interpolate — the roster sits below the
-gradient's transparent zone and reads identically in both mockups:
+Roster tokens are read off the "Survival List" region of the two Figma
+exports (`Alive` / `Dead` / `Lost` / `Npc` layer labels, and the six
+`Rectangle` censor-bar layers). Two of them are flat because the export uses
+the same hex in both scenes; the other two genuinely shift, so they
+interpolate like the chrome tokens above:
 
-| Token | Value | Applied to |
-| --- | --- | --- |
-| `--c-alive` | `#3E8E43` | alive names |
-| `--c-dead` | `#FF2D2D` | dead names |
-| `--c-lost` | `#E0A82E` | lost names |
-| `--c-npc` | `#2F5A34` | NPC names (dimmed) |
+```css
+--c-alive:  #38CF4E;
+--c-dead:   #A40000;
+--c-lost:   color-mix(in oklab, #FF9D00 calc((1 - var(--decay)) * 100%), #CFAC38);
+--c-npc:    #446944;
+--c-censor: color-mix(in oklab, #446944 calc((1 - var(--decay)) * 100%), #1E1F1F);
+```
+
+| Token | Green | Red | Applied to |
+| --- | --- | --- | --- |
+| `--c-alive` | `#38CF4E` | `#38CF4E` (flat) | alive names |
+| `--c-dead` | `#A40000` | `#A40000` (flat) | dead names |
+| `--c-lost` | `#FF9D00` | `#CFAC38` | lost names |
+| `--c-npc` | `#446944` | `#446944` (flat) | NPC names (dimmed) |
+| `--c-censor` | `#446944` | `#1E1F1F` | redaction bars |
 
 A single absolutely-positioned overlay carries scene2's gradient
 (`linear-gradient(180deg, #FF0000 0%, rgba(115,115,115,0) 77.88%,
 rgba(173,67,67,0.413462) 99.99%)`) at `opacity: var(--decay)` with
-`pointer-events: none`. Because that gradient is already fully transparent by
-77.88%, the roster section stays dark green in both scenes without special
-casing — matching both mockups.
+`pointer-events: none`. That gradient is fully transparent by 77.88%, so it
+adds no extra tint over the roster — the roster's own color-mix tokens (above)
+are what carries it from scene1 to scene2.
 
 ### Fonts
 
