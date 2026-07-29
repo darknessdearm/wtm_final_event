@@ -4,6 +4,7 @@ import { EVENT_START, EVENT_DEADLINE, EVENT_WINDOW_LABEL } from '@/lib/data';
 import Emblem from '@/components/Emblem';
 import SystemLog from '@/components/SystemLog';
 import Countdown from '@/components/Countdown';
+import FateBox from '@/components/FateBox';
 
 // GitHub Pages project sites serve assets under /<repo>; plain CSS url() and
 // <img> refs don't get that prefix automatically the way next/image does.
@@ -36,6 +37,8 @@ export default async function Home() {
 
           <p className="mt-6 text-window text-scene-dim">{EVENT_WINDOW_LABEL}</p>
         </header>
+
+        <FateBox />
       </div>
     </main>
   );
