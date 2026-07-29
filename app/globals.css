@@ -13,10 +13,26 @@
 :root {
   --decay: 0;
 
-  --c-text: color-mix(in oklab, #38cf4e calc((1 - var(--decay)) * 100%), #ffffff);
-  --c-text-dim: color-mix(in oklab, #315933 calc((1 - var(--decay)) * 100%), #b3b3b3);
-  --c-glow: color-mix(in oklab, #20b369 calc((1 - var(--decay)) * 100%), #620202);
-  --c-rule: color-mix(in oklab, #38cf4e calc((1 - var(--decay)) * 100%), #ffffff);
+  --c-text: color-mix(
+    in oklab,
+    #38cf4e calc((1 - var(--decay)) * 100%),
+    #ffffff
+  );
+  --c-text-dim: color-mix(
+    in oklab,
+    #4a744c calc((1 - var(--decay)) * 100%),
+    #b3b3b3
+  );
+  --c-glow: color-mix(
+    in oklab,
+    #20b369 calc((1 - var(--decay)) * 100%),
+    #620202
+  );
+  --c-rule: color-mix(
+    in oklab,
+    #38cf4e calc((1 - var(--decay)) * 100%),
+    #ffffff
+  );
 
   /* Roster accents, taken from the Figma exports (template/scene1.css =
      decay 0, template/scene2.css = decay 1). Alive, Dead and Npc use the
@@ -25,9 +41,17 @@
      scene token above. */
   --c-alive: #38cf4e;
   --c-dead: #a40000;
-  --c-lost: color-mix(in oklab, #ff9d00 calc((1 - var(--decay)) * 100%), #cfac38);
-  --c-npc: #446944;
-  --c-censor: color-mix(in oklab, #446944 calc((1 - var(--decay)) * 100%), #1e1f1f);
+  --c-lost: color-mix(
+    in oklab,
+    #ff9d00 calc((1 - var(--decay)) * 100%),
+    #cfac38
+  );
+  --c-npc: #4a744c;
+  --c-censor: color-mix(
+    in oklab,
+    #446944 calc((1 - var(--decay)) * 100%),
+    #1e1f1f
+  );
 }
 
 html {

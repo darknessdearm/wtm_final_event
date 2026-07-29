@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import CreditsRoll from '@/components/CreditsRoll';
-import StatusLegend from '@/components/StatusLegend';
-import SubmitBar from '@/components/SubmitBar';
-import type { Character } from '@/lib/data';
+import { useState } from "react";
+import CreditsRoll from "@/components/CreditsRoll";
+import StatusLegend from "@/components/StatusLegend";
+import SubmitBar from "@/components/SubmitBar";
+import type { Character } from "@/lib/data";
 
 /** Split the cast into three roughly equal columns. */
 function intoColumns(characters: Character[]): Character[][] {

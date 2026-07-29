@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import type { CSSProperties } from 'react';
-import { censorWidthCh, isCensored } from '@/lib/censor';
-import { type Character, type CharacterStatus } from '@/lib/data';
+import type { CSSProperties } from "react";
+import { censorWidthCh, isCensored } from "@/lib/censor";
+import { type Character, type CharacterStatus } from "@/lib/data";
 
 // Fate accents. These do not interpolate with --decay: the roster sits below
 // the red gradient's transparent zone and reads the same in both scenes.
 const STATUS_ACCENT: Record<CharacterStatus, string> = {
-  alive: 'text-fate-alive',
-  dead: 'text-fate-dead',
-  lost: 'text-fate-lost',
+  alive: "text-fate-alive",
+  dead: "text-fate-dead",
+  lost: "text-fate-lost",
 };
 
 function CreditLine({ character }: { character: Character }) {
@@ -17,23 +17,21 @@ function CreditLine({ character }: { character: Character }) {
   // bar whose width tracks the hidden name so redactions vary in length.
   if (isCensored(character)) {
     return (
-      <li className="py-[3px] text-roster">
+      <li className="py-[3px] text-panel">
         <span
           aria-label="censored"
           className="inline-block bg-scene-censor align-middle"
-          style={{ width: `${censorWidthCh(character.name)}ch`, height: '1em' }}
+          style={{ width: `${censorWidthCh(character.name)}ch`, height: "1em" }}
         />
       </li>
     );
   }
 
   const accent = character.isNpc
-    ? 'text-fate-npc'
+    ? "text-fate-npc"
     : STATUS_ACCENT[character.status];
 
-  return (
-    <li className={`py-[3px] text-roster ${accent}`}>{character.name}</li>
-  );
+  return <li className={`py-[3px] text-panel ${accent}`}>{character.name}</li>;
 }
 
 function CreditList({
@@ -46,7 +44,10 @@ function CreditList({
   ariaHidden?: boolean;
 }) {
   return (
-    <ul aria-hidden={ariaHidden} className={ariaHidden ? 'credits-dup' : undefined}>
+    <ul
+      aria-hidden={ariaHidden}
+      className={ariaHidden ? "credits-dup" : undefined}
+    >
       {characters.map((c) => (
         <CreditLine key={`${keyPrefix}-${c.id}`} character={c} />
       ))}
@@ -63,7 +64,7 @@ function CreditList({
 export default function CreditsRoll({
   characters,
   durationSec,
-  className = '',
+  className = "",
   columnIndex,
   columnCount,
 }: {
@@ -78,12 +79,13 @@ export default function CreditsRoll({
 }) {
   // Scale the loop length with the cast so density stays readable; ~0.9s per
   // name, floored so short columns don't whip past.
-  const duration = durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
-  const trackStyle = { '--credits-duration': `${duration}s` } as CSSProperties;
+  const duration =
+    durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
+  const trackStyle = { "--credits-duration": `${duration}s` } as CSSProperties;
   const label =
     columnIndex !== undefined && columnCount !== undefined
       ? `Survival list column ${columnIndex + 1} of ${columnCount}`
-      : 'Survival list column';
+      : "Survival list column";
 
   return (
     <div
