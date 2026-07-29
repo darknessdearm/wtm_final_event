@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import CreditsRoll from '@/components/CreditsRoll';
 import StatusLegend from '@/components/StatusLegend';
+import SubmitBar from '@/components/SubmitBar';
 import type { Character } from '@/lib/data';
 
 /** Split the cast into three roughly equal columns. */
@@ -23,7 +24,7 @@ export default function SurvivalList({
 }: {
   characters: Character[];
 }) {
-  const [roster] = useState<Character[]>(characters);
+  const [roster, setRoster] = useState<Character[]>(characters);
   const columns = intoColumns(roster);
 
   return (
@@ -43,6 +44,10 @@ export default function SurvivalList({
           />
         ))}
       </div>
+
+      <SubmitBar
+        onSubmitted={(character) => setRoster((prev) => [character, ...prev])}
+      />
     </section>
   );
 }
