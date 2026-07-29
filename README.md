@@ -61,13 +61,18 @@ Data flows through a single function, `getCharacters()` in
 | `app/layout.tsx` | Root layout, VT323 + Prompt fonts, metadata |
 | `app/globals.css` | Scene tokens (`--decay` colour interpolation), credits-roll rules |
 | `components/DecayClock.tsx` | Writes `--decay` on `<html>` from the campaign clock |
+| `components/SystemLog.tsx` | Top-left banner line + its hairline |
+| `components/Emblem.tsx` | Murrwood town seal (`<img>`, base-path prefixed) |
 | `components/Countdown.tsx` | Live countdown with the mockup's glow treatment |
 | `components/FateBox.tsx` | Name input → random item + injury |
-| `components/SurvivalList.tsx` | Roster columns, legend, submit bar |
+| `components/SurvivalList.tsx` | Roster section: heading, legend, columns, submit bar |
+| `components/StatusLegend.tsx` | The Alive / Dead / Lost / Npc legend chips |
+| `components/SubmitBar.tsx` | "Add your name here" + status select + submit button |
 | `components/CreditsRoll.tsx` | One scrolling roster column |
 | `lib/decay.ts` | Campaign decay math (0 = green, 1 = red) |
 | `lib/countdown.ts` | Countdown math and formatting |
 | `lib/items.ts`, `lib/damage.ts`, `lib/roll.ts` | Item / injury pools and the draw |
+| `lib/itemsData.json`, `lib/damageData.json` | Raw item / injury source data behind `items.ts` / `damage.ts` |
 | `lib/censor.ts` | "Npc - Alive if Dead, will censor" rule |
 | `lib/validateName.ts` | Shared name validation (FateBox + SubmitBar) |
 | `lib/data.ts` | Types, seeded roster, event constants |
