@@ -42,11 +42,11 @@ export default function Countdown({
     <div className="relative">
       <span
         aria-hidden
-        className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-countdown tracking-term text-scene-glow blur-[5.25px]"
+        className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-countdown tracking-countdown text-scene-glow blur-[5.25px]"
       >
         {text}
       </span>
-      <span className="relative flex items-center justify-center whitespace-nowrap text-countdown tracking-term text-scene">
+      <span className="relative flex items-center justify-center whitespace-nowrap text-countdown tracking-countdown text-scene">
         {text}
       </span>
     </div>

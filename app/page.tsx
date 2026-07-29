@@ -40,7 +40,12 @@ export default async function Home() {
         </header>
 
         <FateBox />
+
+        <hr className="mt-12 h-px border-0 bg-scene-rule sm:mt-16" />
+
         <SurvivalList characters={characters} />
+
+        <div className="h-16" />
       </div>
     </main>
   );

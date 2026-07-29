@@ -14,6 +14,12 @@ npm install
 npm run dev        # http://localhost:3000
 ```
 
+Run the unit tests:
+
+```bash
+npm test
+```
+
 Build the static site locally:
 
 ```bash
@@ -51,9 +57,18 @@ Data flows through a single function, `getCharacters()` in
 
 | Path | What |
 | --- | --- |
-| `app/page.tsx` | The page: header, situation panel, roster, form button, footer |
-| `app/layout.tsx` | Root layout, Noto Sans Thai font, metadata |
-| `components/Countdown.tsx` | Live client-side countdown to the deadline |
-| `components/Emblem.tsx` | Inline SVG event emblem |
-| `lib/data.ts` | Types, mock characters, event constants |
+| `app/page.tsx` | The page: header chrome, fate panel, survival list |
+| `app/layout.tsx` | Root layout, VT323 + Prompt fonts, metadata |
+| `app/globals.css` | Scene tokens (`--decay` colour interpolation), credits-roll rules |
+| `components/DecayClock.tsx` | Writes `--decay` on `<html>` from the campaign clock |
+| `components/Countdown.tsx` | Live countdown with the mockup's glow treatment |
+| `components/FateBox.tsx` | Name input → random item + injury |
+| `components/SurvivalList.tsx` | Roster columns, legend, submit bar |
+| `components/CreditsRoll.tsx` | One scrolling roster column |
+| `lib/decay.ts` | Campaign decay math (0 = green, 1 = red) |
+| `lib/countdown.ts` | Countdown math and formatting |
+| `lib/items.ts`, `lib/damage.ts`, `lib/roll.ts` | Item / injury pools and the draw |
+| `lib/censor.ts` | "Npc - Alive if Dead, will censor" rule |
+| `lib/validateName.ts` | Shared name validation (FateBox + SubmitBar) |
+| `lib/data.ts` | Types, seeded roster, event constants |
 | `lib/firebase.ts` | Data access layer (swap mock → Firebase here) |

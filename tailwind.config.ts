@@ -32,7 +32,14 @@ const config: Config = {
       },
       fontSize: {
         // Fluid equivalents of the fixed sizes on the 1920px Figma canvas.
-        countdown: ['clamp(1.75rem, 7vw, 6rem)', { lineHeight: '1.1' }],
+        //
+        // countdown's bounds were tightened from clamp(1.75rem, 7vw, 6rem):
+        // at 0.15em tracking-term, the un-abbreviated string ("20 Days 23
+        // Hours 59 Minute left") is wider than its container at literally
+        // every breakpoint from 375px to 1440px+ — the old bounds left the
+        // text ~15-24% wider than the space it sits in, tracking or no
+        // tracking. See tracking-countdown below for the matching fix.
+        countdown: ['clamp(1.375rem, 6vw, 5.5rem)', { lineHeight: '1.1' }],
         window: ['clamp(1.125rem, 3.4vw, 4rem)', { lineHeight: '1.2' }],
         log: ['clamp(0.75rem, 1.9vw, 2.25rem)', { lineHeight: '1.2' }],
         panel: ['clamp(0.875rem, 1.6vw, 1.75rem)', { lineHeight: '1.6' }],
@@ -40,6 +47,11 @@ const config: Config = {
       },
       letterSpacing: {
         term: '0.15em',
+        // A lighter tracking just for the countdown (see fontSize.countdown
+        // above) — 0.15em on a ~30-character nowrap string doesn't fit its
+        // container at any width, so the countdown gets its own smaller
+        // value instead of the page-wide term tracking.
+        countdown: '0.05em',
       },
     },
   },
