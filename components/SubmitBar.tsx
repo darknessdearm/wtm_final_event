@@ -8,6 +8,17 @@ const MAX_NAME_LENGTH = 40;
 
 const STATUS_OPTIONS: CharacterStatus[] = ['alive', 'dead', 'lost'];
 
+// Chromium renders native <select>/<option> text with the OS's own text
+// drawing, which ignores next/font's generated `Prompt` webfont entirely —
+// the closed control and the popup both fall back to a font that lacks Thai
+// glyphs and paint tofu, even though the identical font stack works fine for
+// ordinary DOM text. Naming real system Thai faces after Prompt lets the OS
+// renderer actually resolve one. Keep this as an inline style (not a
+// Tailwind class) so it stays visibly tied to the two elements it patches;
+// don't "clean this up" into the shared font-term stack.
+const STATUS_FONT_FAMILY =
+  "var(--font-prompt), 'Noto Sans Thai', 'Leelawadee UI', Thonburi, 'Tahoma', sans-serif";
+
 /**
  * The bottom bar of the survival list. Submitting hands the entry to
  * submitCharacter() and hands it back up so the parent can show it in the
@@ -70,9 +81,15 @@ export default function SubmitBar({
             value={status}
             onChange={(e) => setStatus(e.target.value as CharacterStatus)}
             className="min-w-0 flex-1 cursor-pointer appearance-none bg-transparent text-panel text-scene outline-none"
+            style={{ fontFamily: STATUS_FONT_FAMILY }}
           >
             {STATUS_OPTIONS.map((option) => (
-              <option key={option} value={option} className="bg-black text-white">
+              <option
+                key={option}
+                value={option}
+                className="bg-black text-white"
+                style={{ fontFamily: STATUS_FONT_FAMILY }}
+              >
                 {STATUS_SHORT_LABEL[option]}
               </option>
             ))}
