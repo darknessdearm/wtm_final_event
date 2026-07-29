@@ -7,6 +7,11 @@ import { MAX_NAME_LENGTH, NAME_REQUIRED_ERROR, resolveName } from '@/lib/validat
 
 const STATUS_OPTIONS: CharacterStatus[] = ['alive', 'dead', 'lost'];
 
+// submitCharacter() is a no-op today, but it's the documented swap point for
+// a real database call (see lib/firebase.ts). Once that call can actually
+// reject, this is the message shown instead of silently dropping the entry.
+const SUBMIT_FAILED_ERROR = 'Could not save your entry. Please try again.';
+
 // Defensive cross-platform fallback: native <select>/<option> text is
 // painted by the OS, not the page, and how that text picks up a webfont
 // (like next/font's generated `Prompt`) varies by platform and browser. If
@@ -43,7 +48,13 @@ export default function SubmitBar({
     }
 
     setError('');
-    await submitCharacter({ name: resolved, status });
+
+    try {
+      await submitCharacter({ name: resolved, status });
+    } catch {
+      setError(SUBMIT_FAILED_ERROR);
+      return;
+    }
 
     onSubmitted({
       id: `submitted-${Date.now()}`,
