@@ -30,7 +30,11 @@
 // a client component with `onValue()` instead.
 // ---------------------------------------------------------------------------
 
-import { getMockCharacters, type Character } from './data';
+import {
+  getMockCharacters,
+  type Character,
+  type CharacterStatus,
+} from './data';
 
 export async function getCharacters(): Promise<Character[]> {
   // --- Firebase version (enable after following the wiring guide above) ------
@@ -40,4 +44,22 @@ export async function getCharacters(): Promise<Character[]> {
 
   // --- Mock version ----------------------------------------------------------
   return getMockCharacters();
+}
+
+/**
+ * Record a submitted character.
+ *
+ * Currently a no-op: the caller inserts the entry into its own state so it
+ * shows up in the roll immediately, and a reload restores the seeded list.
+ * This is the single function to replace when the database goes live —
+ * mirroring how getCharacters() is structured.
+ *
+ * --- Firebase version (enable after following the wiring guide above) ------
+ * await push(ref(db, 'characters'), entry);
+ */
+export async function submitCharacter(entry: {
+  name: string;
+  status: CharacterStatus;
+}): Promise<void> {
+  void entry;
 }

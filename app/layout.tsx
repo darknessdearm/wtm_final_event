@@ -1,12 +1,22 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_Thai } from 'next/font/google';
+import { Prompt, VT323 } from 'next/font/google';
 import './globals.css';
 import { EVENT_TITLE, EVENT_DESCRIPTION } from '@/lib/data';
 
-const notoThai = Noto_Sans_Thai({
+// Terminal face for Latin text and numerals. Latin-only by design.
+const vt323 = VT323({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-vt323',
+  display: 'swap',
+});
+
+// Thai fallback — VT323 has no Thai glyphs, and item names, injuries and the
+// result sentence are all Thai.
+const prompt = Prompt({
   subsets: ['thai', 'latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-noto-thai',
+  weight: ['300', '400', '500'],
+  variable: '--font-prompt',
   display: 'swap',
 });
 
@@ -21,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className={notoThai.variable}>
-      <body className="font-sans antialiased bg-neutral-800">{children}</body>
+    <html lang="th" className={`${vt323.variable} ${prompt.variable}`}>
+      <body className="bg-black font-term antialiased">{children}</body>
     </html>
   );
 }
