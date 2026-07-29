@@ -8,14 +8,15 @@ const MAX_NAME_LENGTH = 40;
 
 const STATUS_OPTIONS: CharacterStatus[] = ['alive', 'dead', 'lost'];
 
-// Chromium renders native <select>/<option> text with the OS's own text
-// drawing, which ignores next/font's generated `Prompt` webfont entirely —
-// the closed control and the popup both fall back to a font that lacks Thai
-// glyphs and paint tofu, even though the identical font stack works fine for
-// ordinary DOM text. Naming real system Thai faces after Prompt lets the OS
-// renderer actually resolve one. Keep this as an inline style (not a
-// Tailwind class) so it stays visibly tied to the two elements it patches;
-// don't "clean this up" into the shared font-term stack.
+// Defensive cross-platform fallback: native <select>/<option> text is
+// painted by the OS, not the page, and how that text picks up a webfont
+// (like next/font's generated `Prompt`) varies by platform and browser. If
+// the webfont doesn't apply there, name a real system Thai face per platform
+// so the label still resolves to something with Thai glyphs instead of
+// silently falling through to a font that lacks them. Keep this as an
+// inline style (not a Tailwind class) so it stays visibly tied to the two
+// elements it patches; don't "clean this up" into the shared font-term
+// stack.
 const STATUS_FONT_FAMILY =
   "var(--font-prompt), 'Noto Sans Thai', 'Leelawadee UI', Thonburi, 'Tahoma', sans-serif";
 
