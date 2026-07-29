@@ -5,7 +5,7 @@ export default function StatusLegend() {
       <li className="text-scene">Player Status</li>
       <li className="text-fate-alive">· Alive</li>
       <li className="text-fate-dead">· Dead</li>
-      <li className="text-fate-lost">· Lost</li>
+      <li className="text-fate-lost">· Missing</li>
       <li className="text-fate-npc">· Npc - Alive if Dead, will censor</li>
     </ul>
   );
