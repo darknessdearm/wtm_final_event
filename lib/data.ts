@@ -25,8 +25,9 @@ export interface Character {
   isNpc: boolean;
 }
 
-// Countdown window (Thailand time, UTC+7). The header timer only runs between
-// EVENT_START and EVENT_DEADLINE; outside that window it shows a placeholder.
+// Countdown window (Thailand time, UTC+7). The header timer counts down to
+// EVENT_DEADLINE; before EVENT_START it shows the full window, and once past
+// EVENT_DEADLINE it shows all zeros (see computeCountdown in lib/countdown.ts).
 // Change these two lines to reschedule. If you meant the *end* of Aug 22 rather
 // than its first midnight, use '2026-08-23T00:00:00+07:00' for the deadline.
 export const EVENT_START = '2026-08-01T00:00:00+07:00';
@@ -37,7 +38,7 @@ export const EVENT_DESCRIPTION = 'สุ่มสถานการณ์ปร�
 /** Small subtitle under the countdown showing the event window. */
 export const EVENT_WINDOW_LABEL = 'Event Duration: August 01 - 21, 2026';
 
-/** Short Thai word for each status — used in the scrolling credits roll. */
+/** Short Thai word for each status — used for the status <option> labels in SubmitBar. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
   alive: 'รอด',
   dead: 'ตาย',
