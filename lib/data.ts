@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /** รอด = alive, ตาย = dead, สาบสูญ = lost. */
-export type CharacterStatus = 'alive' | 'dead' | 'lost';
+export type CharacterStatus = "alive" | "dead" | "lost";
 
 export interface Character {
   id: string;
@@ -30,53 +30,146 @@ export interface Character {
 // EVENT_DEADLINE it shows all zeros (see computeCountdown in lib/countdown.ts).
 // Change these two lines to reschedule. If you meant the *end* of Aug 22 rather
 // than its first midnight, use '2026-08-23T00:00:00+07:00' for the deadline.
-export const EVENT_START = '2026-08-01T00:00:00+07:00';
-export const EVENT_DEADLINE = '2026-08-22T00:00:00+07:00';
+export const EVENT_START = "2026-08-01T00:00:00+07:00";
+export const EVENT_DEADLINE = "2026-08-22T00:00:00+07:00";
 
-export const EVENT_TITLE = 'WTM Final Event';
-export const EVENT_DESCRIPTION = 'สุ่มสถานการณ์ประจำสัปดาห์ · Week 3';
+export const EVENT_TITLE = "WTM Final Event";
+export const EVENT_DESCRIPTION = "สุ่มสถานการณ์ประจำสัปดาห์ · Week 3";
 /** Small subtitle under the countdown showing the event window. */
-export const EVENT_WINDOW_LABEL = 'Event Duration: August 01 - 21, 2026';
+export const EVENT_WINDOW_LABEL = "Event Duration: August 01 - 21, 2026";
 
 /** Short Thai word for each status — used for the status <option> labels in SubmitBar. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
-  alive: 'รอด',
-  dead: 'ตาย',
-  lost: 'สาบสูญ',
+  alive: "Alive",
+  dead: "Dead",
+  lost: "Lost",
 };
 
 // The nine hand-authored characters. These stay in the roster verbatim; the
 // rest of the credits list is generated from the name pools below.
 const FEATURED_CHARACTERS: Character[] = [
-  { id: 'c01', name: 'Ethan Cole', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c02', name: 'Olivia Reed', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c03', name: 'Marcus Bell', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c04', name: 'Liam Foster', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c05', name: 'Chloe Grant', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c06', name: 'Noah Blake', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c07', name: 'Ava Sinclair', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c08', name: 'Mason Hale', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
-  { id: 'c09', name: 'Isla Monroe', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
+  {
+    id: "c01",
+    name: "Jeffrey McPine",
+    role: "ตัวประกอบฉาก",
+    status: "dead",
+    isNpc: false,
+  },
+  {
+    id: "c02",
+    name: "Charlie Kiddington",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: false,
+  },
+  {
+    id: "c03",
+    name: "Felico Wise",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: false,
+  },
+  {
+    id: "c04",
+    name: "RedWood [sk'aWk'os]",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: false,
+  },
 ];
 
 // Name pools the generator mixes together. The featured names' own first/last
 // names are folded in so the whole roster reads as one consistent cast.
 const FIRST_NAMES = [
-  'Ethan', 'Olivia', 'Marcus', 'Liam', 'Chloe', 'Noah', 'Ava', 'Mason', 'Isla',
-  'Emma', 'Lucas', 'Sophia', 'Owen', 'Mia', 'Caleb', 'Grace', 'Julian', 'Hazel',
-  'Nathan', 'Ruby', 'Elias', 'Nora', 'Adrian', 'Violet', 'Silas', 'Clara',
-  'Felix', 'Iris', 'Theo', 'Alice', 'Milo', 'Elena', 'Jasper', 'Freya', 'Hugo',
-  'Stella', 'Leo', 'Cora', 'Rowan', 'Maya', 'Dorian', 'Lena', 'Simon', 'Vera',
-  'Aaron', 'Willa',
+  "Ethan",
+  "Olivia",
+  "Marcus",
+  "Liam",
+  "Chloe",
+  "Noah",
+  "Ava",
+  "Mason",
+  "Isla",
+  "Emma",
+  "Lucas",
+  "Sophia",
+  "Owen",
+  "Mia",
+  "Caleb",
+  "Grace",
+  "Julian",
+  "Hazel",
+  "Nathan",
+  "Ruby",
+  "Elias",
+  "Nora",
+  "Adrian",
+  "Violet",
+  "Silas",
+  "Clara",
+  "Felix",
+  "Iris",
+  "Theo",
+  "Alice",
+  "Milo",
+  "Elena",
+  "Jasper",
+  "Freya",
+  "Hugo",
+  "Stella",
+  "Leo",
+  "Cora",
+  "Rowan",
+  "Maya",
+  "Dorian",
+  "Lena",
+  "Simon",
+  "Vera",
+  "Aaron",
+  "Willa",
 ];
 
 const LAST_NAMES = [
-  'Cole', 'Reed', 'Bell', 'Foster', 'Grant', 'Blake', 'Sinclair', 'Hale',
-  'Monroe', 'Vance', 'Hart', 'Frost', 'Wells', 'Quinn', 'Marsh', 'Rhodes',
-  'Boyd', 'Lang', 'Pierce', 'Cross', 'Sloan', 'Weaver', 'Nash', 'Fields',
-  'Dalton', 'Byrne', 'Rourke', 'Ellis', 'Payne', 'Shaw', 'Vaughn', 'Mercer',
-  'Holloway', 'Ashford', 'Calloway', 'Winters', 'Thorne', 'Beckett', 'Sterling',
-  'Abbott',
+  "Cole",
+  "Reed",
+  "Bell",
+  "Foster",
+  "Grant",
+  "Blake",
+  "Sinclair",
+  "Hale",
+  "Monroe",
+  "Vance",
+  "Hart",
+  "Frost",
+  "Wells",
+  "Quinn",
+  "Marsh",
+  "Rhodes",
+  "Boyd",
+  "Lang",
+  "Pierce",
+  "Cross",
+  "Sloan",
+  "Weaver",
+  "Nash",
+  "Fields",
+  "Dalton",
+  "Byrne",
+  "Rourke",
+  "Ellis",
+  "Payne",
+  "Shaw",
+  "Vaughn",
+  "Mercer",
+  "Holloway",
+  "Ashford",
+  "Calloway",
+  "Winters",
+  "Thorne",
+  "Beckett",
+  "Sterling",
+  "Abbott",
 ];
 
 // Seeded PRNG (mulberry32) so the generated roster is identical on every build.
@@ -126,14 +219,14 @@ function generateCharacters(
 
     const r = rand();
     const status: CharacterStatus =
-      r < 0.42 ? 'alive' : r < 0.8 ? 'dead' : 'lost';
+      r < 0.42 ? "alive" : r < 0.8 ? "dead" : "lost";
     // Roughly a quarter of the generated cast are NPCs; the dead ones among
     // them render as redaction bars.
     const isNpc = rand() < 0.25;
     out.push({
-      id: `g${String(++n).padStart(3, '0')}`,
+      id: `g${String(++n).padStart(3, "0")}`,
       name,
-      role: 'ตัวประกอบฉาก',
+      role: "ตัวประกอบฉาก",
       status,
       isNpc,
     });

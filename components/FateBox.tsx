@@ -1,16 +1,20 @@
-'use client';
+"use client";
 
-import { useState, type FormEvent, type ReactNode } from 'react';
-import { rollFate, type Fate } from '@/lib/roll';
-import { MAX_NAME_LENGTH, NAME_REQUIRED_ERROR, resolveName } from '@/lib/validateName';
+import { useState, type FormEvent, type ReactNode } from "react";
+import { rollFate, type Fate } from "@/lib/roll";
+import {
+  MAX_NAME_LENGTH,
+  NAME_REQUIRED_ERROR,
+  resolveName,
+} from "@/lib/validateName";
 
 /** The bracketed slots in the result sentence, rendered brighter than the prose. */
 function Slot({ children }: { children: ReactNode }) {
   return (
     <span className="text-scene">
-      {'< '}
+      {"< "}
       {children}
-      {' >'}
+      {" >"}
     </span>
   );
 }
@@ -20,10 +24,10 @@ function Slot({ children }: { children: ReactNode }) {
  * different item and injury each time.
  */
 export default function FateBox() {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [fate, setFate] = useState<Fate | null>(null);
-  const [rolledName, setRolledName] = useState('');
-  const [error, setError] = useState('');
+  const [rolledName, setRolledName] = useState("");
+  const [error, setError] = useState("");
   const [imageBroken, setImageBroken] = useState(false);
 
   function handleSubmit(event: FormEvent) {
@@ -36,7 +40,7 @@ export default function FateBox() {
       return;
     }
 
-    setError('');
+    setError("");
     setImageBroken(false);
     setRolledName(resolved);
     setFate(rollFate());
@@ -81,13 +85,15 @@ export default function FateBox() {
         {fate && !error && (
           <>
             <p className="mt-4 text-panel leading-loose text-scene-dim">
-              <Slot>{rolledName}</Slot> ได้รับ <Slot>{fate.item.name}</Slot>{' '}
+              <Slot>{rolledName}</Slot> ได้รับ <Slot>{fate.item.name}</Slot>{" "}
               โดยที่คุณจะมีโอกาส <Slot>{fate.damage}</Slot>
             </p>
 
             <div className="mt-8 text-center">
               {imageBroken ? (
-                <p className="text-panel text-scene-dim">&lt;Image of Item&gt;</p>
+                <p className="text-panel text-scene-dim">
+                  &lt;Image of Item&gt;
+                </p>
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -106,7 +112,7 @@ export default function FateBox() {
 
         {!fate && !error && (
           <p className="mt-4 text-panel text-scene-dim">
-            &lt;Image of Item&gt;
+            pending to simulate.....
           </p>
         )}
       </div>

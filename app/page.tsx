@@ -1,24 +1,40 @@
-import { getCharacters } from '@/lib/firebase';
-import DecayClock from '@/components/DecayClock';
-import { EVENT_START, EVENT_DEADLINE, EVENT_WINDOW_LABEL } from '@/lib/data';
-import Emblem from '@/components/Emblem';
-import SystemLog from '@/components/SystemLog';
-import Countdown from '@/components/Countdown';
-import FateBox from '@/components/FateBox';
-import SurvivalList from '@/components/SurvivalList';
+import { getCharacters } from "@/lib/firebase";
+import DecayClock from "@/components/DecayClock";
+import { EVENT_START, EVENT_DEADLINE, EVENT_WINDOW_LABEL } from "@/lib/data";
+import Emblem from "@/components/Emblem";
+import SystemLog from "@/components/SystemLog";
+import Countdown from "@/components/Countdown";
+import FateBox from "@/components/FateBox";
+import SurvivalList from "@/components/SurvivalList";
 
 // GitHub Pages project sites serve assets under /<repo>; plain CSS url() and
 // <img> refs don't get that prefix automatically the way next/image does.
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default async function Home() {
   const characters = await getCharacters();
 
   return (
     <main
-      className="relative min-h-screen bg-black bg-cover bg-center font-term text-scene"
-      style={{ backgroundImage: `url(${BASE_PATH}/assets/noise-bg.svg)` }}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        padding: "20px", // Example padding
+      }}
     >
+      <div
+        className="relative min-h-screen bg-black bg-cover bg-center font-term text-scene"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `url(${BASE_PATH}/assets/noise-bg-02.svg)`,
+          opacity: 0.3, // Adjust this value (0.0 to 1.0)
+          zIndex: -1,
+        }}
+      />
       <DecayClock start={EVENT_START} deadline={EVENT_DEADLINE} />
       <div className="scene-overlay" aria-hidden />
 
@@ -36,7 +52,9 @@ export default async function Home() {
             <Countdown start={EVENT_START} deadline={EVENT_DEADLINE} />
           </h1>
 
-          <p className="mt-6 text-window text-scene-dim">{EVENT_WINDOW_LABEL}</p>
+          <p className="mt-6 text-window text-scene-dim">
+            {EVENT_WINDOW_LABEL}
+          </p>
         </header>
 
         <FateBox />
