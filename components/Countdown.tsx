@@ -39,7 +39,7 @@ export default function Countdown({
   const text = formatCountdown(state);
 
   return (
-    <div className="relative">
+    <span className="relative inline-block">
       <span
         aria-hidden
         className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-countdown tracking-countdown text-scene-glow blur-[5.25px]"
@@ -49,6 +49,6 @@ export default function Countdown({
       <span className="relative flex items-center justify-center whitespace-nowrap text-countdown tracking-countdown text-scene">
         {text}
       </span>
-    </div>
+    </span>
   );
 }
