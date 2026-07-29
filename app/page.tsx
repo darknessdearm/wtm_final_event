@@ -1,4 +1,6 @@
 import { getCharacters } from '@/lib/firebase';
+import DecayClock from '@/components/DecayClock';
+import { EVENT_START, EVENT_DEADLINE } from '@/lib/data';
 
 // GitHub Pages project sites serve assets under /<repo>; plain CSS url() and
 // <img> refs don't get that prefix automatically the way next/image does.
@@ -12,6 +14,7 @@ export default async function Home() {
       className="relative min-h-screen bg-black bg-cover bg-center font-term text-scene"
       style={{ backgroundImage: `url(${BASE_PATH}/assets/noise-bg.svg)` }}
     >
+      <DecayClock start={EVENT_START} deadline={EVENT_DEADLINE} />
       <div className="scene-overlay" aria-hidden />
 
       <div className="relative mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-8 sm:py-10">
