@@ -32,9 +32,6 @@ export interface Character {
 export const EVENT_START = '2026-08-01T00:00:00+07:00';
 export const EVENT_DEADLINE = '2026-08-22T00:00:00+07:00';
 
-/** Google Form (or similar) the footer button links to. Placeholder for now. */
-export const SUBMISSION_FORM_URL = '#';
-
 export const EVENT_TITLE = 'WTM Final Event';
 export const EVENT_DESCRIPTION = 'สุ่มสถานการณ์ประจำสัปดาห์ · Week 3';
 /** Small subtitle under the countdown showing the event window. */
