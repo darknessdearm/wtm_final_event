@@ -35,7 +35,7 @@ export const EVENT_DEADLINE = '2026-08-22T00:00:00+07:00';
 export const EVENT_TITLE = 'WTM Final Event';
 export const EVENT_DESCRIPTION = 'สุ่มสถานการณ์ประจำสัปดาห์ · Week 3';
 /** Small subtitle under the countdown showing the event window. */
-export const EVENT_WINDOW_LABEL = 'ช่วงกิจกรรม 1 – 22 ส.ค. 2026';
+export const EVENT_WINDOW_LABEL = 'Event Duration: August 01 - 21, 2026';
 
 /** Short Thai word for each status — used in the scrolling credits roll. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
