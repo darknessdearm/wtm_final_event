@@ -10,9 +10,9 @@ import {
 // Name colour per fate — same accents the old roster columns used, tuned to
 // read on the near-black credits "screen".
 const STATUS_ACCENT: Record<CharacterStatus, string> = {
-  survived: 'text-emerald-300',
-  dead: 'text-red-300',
-  missing: 'text-amber-300',
+  alive: 'text-fate-alive',
+  dead: 'text-fate-dead',
+  lost: 'text-fate-lost',
 };
 
 function CreditLine({ character }: { character: Character }) {

@@ -7,8 +7,8 @@
 // the UI keeps consuming the same `Character` shape.
 // ---------------------------------------------------------------------------
 
-/** รอด = survived, ตาย = dead, สาบสูญ = missing. */
-export type CharacterStatus = 'survived' | 'dead' | 'missing';
+/** รอด = alive, ตาย = dead, สาบสูญ = lost. */
+export type CharacterStatus = 'alive' | 'dead' | 'lost';
 
 export interface Character {
   id: string;
@@ -17,13 +17,12 @@ export interface Character {
   /** บทบาท เช่น ตัวประกอบฉาก */
   role: string;
   status: CharacterStatus;
-}
-
-export interface StatusGroup {
-  status: CharacterStatus;
-  /** Thai label shown as the card heading. */
-  label: string;
-  characters: Character[];
+  /**
+   * NPCs are dimmed in the roster, and a *dead* NPC has their name redacted
+   * entirely — "Npc - Alive if Dead, will censor" in the legend. NPC-ness is
+   * independent of aliveness, so it is a flag rather than a fourth status.
+   */
+  isNpc: boolean;
 }
 
 // Countdown window (Thailand time, UTC+7). The header timer only runs between
@@ -43,23 +42,23 @@ export const EVENT_WINDOW_LABEL = 'ช่วงกิจกรรม 1 – 22 �
 
 /** Short Thai word for each status — used in the scrolling credits roll. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
-  survived: 'รอด',
+  alive: 'รอด',
   dead: 'ตาย',
-  missing: 'สาบสูญ',
+  lost: 'สาบสูญ',
 };
 
 // The nine hand-authored characters. These stay in the roster verbatim; the
 // rest of the credits list is generated from the name pools below.
 const FEATURED_CHARACTERS: Character[] = [
-  { id: 'c01', name: 'Ethan Cole', role: 'ตัวประกอบฉาก', status: 'survived' },
-  { id: 'c02', name: 'Olivia Reed', role: 'ตัวประกอบฉาก', status: 'survived' },
-  { id: 'c03', name: 'Marcus Bell', role: 'ตัวประกอบฉาก', status: 'survived' },
-  { id: 'c04', name: 'Liam Foster', role: 'ตัวประกอบฉาก', status: 'dead' },
-  { id: 'c05', name: 'Chloe Grant', role: 'ตัวประกอบฉาก', status: 'dead' },
-  { id: 'c06', name: 'Noah Blake', role: 'ตัวประกอบฉาก', status: 'dead' },
-  { id: 'c07', name: 'Ava Sinclair', role: 'ตัวประกอบฉาก', status: 'dead' },
-  { id: 'c08', name: 'Mason Hale', role: 'ตัวประกอบฉาก', status: 'missing' },
-  { id: 'c09', name: 'Isla Monroe', role: 'ตัวประกอบฉาก', status: 'missing' },
+  { id: 'c01', name: 'Ethan Cole', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
+  { id: 'c02', name: 'Olivia Reed', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
+  { id: 'c03', name: 'Marcus Bell', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
+  { id: 'c04', name: 'Liam Foster', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
+  { id: 'c05', name: 'Chloe Grant', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
+  { id: 'c06', name: 'Noah Blake', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
+  { id: 'c07', name: 'Ava Sinclair', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
+  { id: 'c08', name: 'Mason Hale', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
+  { id: 'c09', name: 'Isla Monroe', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
 ];
 
 // Name pools the generator mixes together. The featured names' own first/last
@@ -107,7 +106,7 @@ function shuffle<T>(items: T[], rand: () => number): T[] {
 
 /**
  * Build `count` unique extra characters by mixing the first/last name pools.
- * Statuses are weighted ~ survived / dead / missing so the roll feels like the
+ * Statuses are weighted ~ alive / dead / lost so the roll feels like the
  * aftermath of a survival scenario rather than an even split.
  */
 function generateCharacters(
@@ -129,19 +128,23 @@ function generateCharacters(
 
     const r = rand();
     const status: CharacterStatus =
-      r < 0.42 ? 'survived' : r < 0.8 ? 'dead' : 'missing';
+      r < 0.42 ? 'alive' : r < 0.8 ? 'dead' : 'lost';
+    // Roughly a quarter of the generated cast are NPCs; the dead ones among
+    // them render as redaction bars.
+    const isNpc = rand() < 0.25;
     out.push({
       id: `g${String(++n).padStart(3, '0')}`,
       name,
       role: 'ตัวประกอบฉาก',
       status,
+      isNpc,
     });
   }
   return out;
 }
 
 // The full roster: the nine featured characters plus 111 generated ones (120
-// total, > 100 as required), all shuffled together so survived / dead / missing
+// total, > 100 as required), all shuffled together so alive / dead / lost
 // are interleaved for the end-credits roll.
 const ROSTER: Character[] = shuffle(
   [
@@ -154,22 +157,6 @@ const ROSTER: Character[] = shuffle(
   ],
   mulberry32(0x5eed),
 );
-
-/** Ordered status columns rendered in the roster section. */
-export const STATUS_COLUMNS: { status: CharacterStatus; label: string }[] = [
-  { status: 'survived', label: 'รายชื่อผู้รอดชีวิต' },
-  { status: 'dead', label: 'รายชื่อผู้เสียชีวิต' },
-  { status: 'missing', label: 'รายชื่อผู้สาบสูญ' },
-];
-
-/** Group a flat character list into the ordered status columns above. */
-export function groupByStatus(characters: Character[]): StatusGroup[] {
-  return STATUS_COLUMNS.map(({ status, label }) => ({
-    status,
-    label,
-    characters: characters.filter((c) => c.status === status),
-  }));
-}
 
 /** The mock source of truth. Swapped for Firebase in lib/firebase.ts. */
 export function getMockCharacters(): Character[] {
