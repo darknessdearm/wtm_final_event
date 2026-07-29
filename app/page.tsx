@@ -5,6 +5,7 @@ import Emblem from '@/components/Emblem';
 import SystemLog from '@/components/SystemLog';
 import Countdown from '@/components/Countdown';
 import FateBox from '@/components/FateBox';
+import SurvivalList from '@/components/SurvivalList';
 
 // GitHub Pages project sites serve assets under /<repo>; plain CSS url() and
 // <img> refs don't get that prefix automatically the way next/image does.
@@ -39,6 +40,7 @@ export default async function Home() {
         </header>
 
         <FateBox />
+        <SurvivalList characters={characters} />
       </div>
     </main>
   );
