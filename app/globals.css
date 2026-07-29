@@ -20,7 +20,7 @@
   );
   --c-text-dim: color-mix(
     in oklab,
-    #4a744c calc((1 - var(--decay)) * 100%),
+    #a8cfaa calc((1 - var(--decay)) * 100%),
     #b3b3b3
   );
   --c-glow: color-mix(
@@ -46,7 +46,7 @@
     #ff9d00 calc((1 - var(--decay)) * 100%),
     #cfac38
   );
-  --c-npc: #4a744c;
+  --c-npc: #a8cfaa;
   --c-censor: color-mix(
     in oklab,
     #446944 calc((1 - var(--decay)) * 100%),
