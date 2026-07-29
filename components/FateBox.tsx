@@ -2,8 +2,7 @@
 
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { rollFate, type Fate } from '@/lib/roll';
-
-const MAX_NAME_LENGTH = 40;
+import { MAX_NAME_LENGTH, NAME_REQUIRED_ERROR, resolveName } from '@/lib/validateName';
 
 /** The bracketed slots in the result sentence, rendered brighter than the prose. */
 function Slot({ children }: { children: ReactNode }) {
@@ -30,16 +29,16 @@ export default function FateBox() {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    const trimmed = name.trim().slice(0, MAX_NAME_LENGTH);
-    if (!trimmed) {
-      setError('> ERROR: NAME REQUIRED');
+    const resolved = resolveName(name);
+    if (!resolved) {
+      setError(NAME_REQUIRED_ERROR);
       setFate(null);
       return;
     }
 
     setError('');
     setImageBroken(false);
-    setRolledName(trimmed);
+    setRolledName(resolved);
     setFate(rollFate());
   }
 

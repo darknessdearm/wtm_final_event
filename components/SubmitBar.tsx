@@ -3,8 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { STATUS_SHORT_LABEL, type Character, type CharacterStatus } from '@/lib/data';
 import { submitCharacter } from '@/lib/firebase';
-
-const MAX_NAME_LENGTH = 40;
+import { MAX_NAME_LENGTH, NAME_REQUIRED_ERROR, resolveName } from '@/lib/validateName';
 
 const STATUS_OPTIONS: CharacterStatus[] = ['alive', 'dead', 'lost'];
 
@@ -37,18 +36,18 @@ export default function SubmitBar({
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    const trimmed = name.trim().slice(0, MAX_NAME_LENGTH);
-    if (!trimmed) {
-      setError('> ERROR: NAME REQUIRED');
+    const resolved = resolveName(name);
+    if (!resolved) {
+      setError(NAME_REQUIRED_ERROR);
       return;
     }
 
     setError('');
-    await submitCharacter({ name: trimmed, status });
+    await submitCharacter({ name: resolved, status });
 
     onSubmitted({
       id: `submitted-${Date.now()}`,
-      name: trimmed,
+      name: resolved,
       role: 'ตัวประกอบฉาก',
       status,
       isNpc: false,
