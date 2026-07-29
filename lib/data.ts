@@ -42,7 +42,7 @@ export const EVENT_WINDOW_LABEL = "Event Duration: August 01 - 21, 2026";
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
   alive: "Alive",
   dead: "Dead",
-  lost: "Lost",
+  lost: "Missing",
 };
 
 // The nine hand-authored characters. These stay in the roster verbatim; the
