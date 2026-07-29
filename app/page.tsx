@@ -17,7 +17,7 @@ export default async function Home() {
   return (
     <main
       className="relative min-h-screen bg-black bg-cover bg-center font-term text-scene"
-      style={{ backgroundImage: `url(${BASE_PATH}/assets/noise-bg.svg)` }}
+      style={{ backgroundImage: url(${BASE_PATH}/assets/noise-bg.svg) }}
     >
       <DecayClock start={EVENT_START} deadline={EVENT_DEADLINE} />
       <div className="scene-overlay" aria-hidden />
