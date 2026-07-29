@@ -64,20 +64,31 @@ export default function CreditsRoll({
   characters,
   durationSec,
   className = '',
+  columnIndex,
+  columnCount,
 }: {
   characters: Character[];
   durationSec?: number;
   className?: string;
+  /** 0-based position of this column, paired with `columnCount` to build a
+   *  distinct aria-label (e.g. "Survival list column 1 of 3"). Omit for the
+   *  generic label. */
+  columnIndex?: number;
+  columnCount?: number;
 }) {
   // Scale the loop length with the cast so density stays readable; ~0.9s per
   // name, floored so short columns don't whip past.
   const duration = durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
   const trackStyle = { '--credits-duration': `${duration}s` } as CSSProperties;
+  const label =
+    columnIndex !== undefined && columnCount !== undefined
+      ? `Survival list column ${columnIndex + 1} of ${columnCount}`
+      : 'Survival list column';
 
   return (
     <div
       tabIndex={0}
-      aria-label="Survival list column"
+      aria-label={label}
       className={`credits-viewport group relative overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-scene-rule ${className}`}
     >
       <div

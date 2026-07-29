@@ -41,6 +41,8 @@ export default function SurvivalList({
             characters={column}
             durationSec={COLUMN_DURATIONS[i]}
             className="h-[320px] sm:h-[480px]"
+            columnIndex={i}
+            columnCount={columns.length}
           />
         ))}
       </div>
