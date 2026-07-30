@@ -23,7 +23,7 @@
 - **Item pool is all 26 items.** `isOnlyOne` / `ishidden` / `isLocked` are carried on the type but never filter.
 - **TypeScript is strict.** `npx tsc --noEmit` must pass at the end of every task.
 - **Exact copy strings** (used verbatim, do not paraphrase):
-  - `SYSTEM LOG V.2.0.1 - May 13, 2001`
+  - `SYSTEM LOG V.2.0.1 - May 07, 2001`
   - `#WTM_EVENT_05 : THE FINAL CHAPTER`
   - `Event Duration: August 01 - 21, 2026`
   - `What will happened with you?`
@@ -1210,7 +1210,7 @@ export default function SystemLog() {
   return (
     <div className="w-full">
       <p className="text-log tracking-term text-scene">
-        SYSTEM LOG V.2.0.1 - May 13, 2001
+        SYSTEM LOG V.2.0.1 - May 07, 2001
       </p>
       <hr className="mt-3 h-px border-0 bg-scene-rule" />
     </div>
@@ -1278,7 +1278,7 @@ Expected: both succeed.
 - [ ] **Step 6: Verify visually**
 
 Run: `npm run dev`.
-Expected: green `SYSTEM LOG V.2.0.1 - May 13, 2001` at top-left above a hairline, the white Murrwood seal centred beneath it, then the dim `#WTM_EVENT_05 : THE FINAL CHAPTER` tag and the dim `Event Duration: August 01 - 21, 2026` line. Narrow the window to 375px and confirm nothing overflows horizontally.
+Expected: green `SYSTEM LOG V.2.0.1 - May 07, 2001` at top-left above a hairline, the white Murrwood seal centred beneath it, then the dim `#WTM_EVENT_05 : THE FINAL CHAPTER` tag and the dim `Event Duration: August 01 - 21, 2026` line. Narrow the window to 375px and confirm nothing overflows horizontally.
 
 - [ ] **Step 7: Commit**
 
@@ -2221,7 +2221,7 @@ Confirm: `ls out/index.html`
 
 Run: `npm run dev` with `--decay` at its default 0. Compare top to bottom against the green mockup:
 
-- [ ] `SYSTEM LOG V.2.0.1 - May 13, 2001` top-left, above a hairline
+- [ ] `SYSTEM LOG V.2.0.1 - May 07, 2001` top-left, above a hairline
 - [ ] Murrwood seal centred
 - [ ] `#WTM_EVENT_05 : THE FINAL CHAPTER` dim green
 - [ ] Large glowing green countdown
