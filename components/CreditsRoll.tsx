@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { censorWidthCh, isCensored } from "@/lib/censor";
+import { isCensored } from "@/lib/censor";
 import { type Character, type CharacterStatus } from "@/lib/data";
 
 // Fate accents. These do not interpolate with --decay: the roster sits below
@@ -13,25 +13,20 @@ const STATUS_ACCENT: Record<CharacterStatus, string> = {
 };
 
 function CreditLine({ character }: { character: Character }) {
-  // "Npc - Alive if Dead, will censor": a dead NPC's name is redacted, with a
-  // bar whose width tracks the hidden name so redactions vary in length.
-  if (isCensored(character)) {
-    return (
-      <li className="py-[3px] text-panel">
-        <span
-          aria-label="censored"
-          className="inline-block bg-scene-censor align-middle"
-          style={{ width: `${censorWidthCh(character.name)}ch`, height: "1em" }}
-        />
-      </li>
-    );
-  }
-
   const accent = character.isNpc
     ? "text-fate-npc"
     : STATUS_ACCENT[character.status];
 
-  return <li className={`py-[3px] text-panel ${accent}`}>{character.name}</li>;
+  // "Npc - Alive if Dead": a dead NPC's name is struck through. It reads as
+  // plain text otherwise, so no aria-label is needed the way the old redaction
+  // bar needed one — the bar had no text content of its own.
+  const struck = isCensored(character) ? " line-through" : "";
+
+  return (
+    <li className={`py-[3px] text-panel ${accent}${struck}`}>
+      {character.name}
+    </li>
+  );
 }
 
 function CreditList({
@@ -82,10 +77,13 @@ export default function CreditsRoll({
   const duration =
     durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
   const trackStyle = { "--credits-duration": `${duration}s` } as CSSProperties;
+  // The roster is a single column now, so the plain label is the usual one.
+  // The indexed form stays for a multi-column layout, where each viewport needs
+  // to be distinguishable.
   const label =
     columnIndex !== undefined && columnCount !== undefined
       ? `Survival list column ${columnIndex + 1} of ${columnCount}`
-      : "Survival list column";
+      : "Survival list";
 
   return (
     <div

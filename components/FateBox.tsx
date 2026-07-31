@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { ITEMS, type Item } from "@/lib/items";
 import { rollFate, type Fate } from "@/lib/roll";
+import { subscribeToItems } from "@/lib/firebaseClient";
 import {
   MAX_NAME_LENGTH,
   NAME_REQUIRED_ERROR,
@@ -29,6 +31,15 @@ export default function FateBox() {
   const [rolledName, setRolledName] = useState("");
   const [error, setError] = useState("");
   const [imageBroken, setImageBroken] = useState(false);
+  const [items, setItems] = useState<Item[]>(ITEMS);
+
+  // Draw from the live pool when there is one, so item text can be edited in
+  // the Firebase console without a redeploy. Until the first snapshot lands —
+  // and forever, if Firebase isn't configured — this stays on the bundled
+  // ITEMS, whose images ship with the site.
+  useEffect(() => {
+    return subscribeToItems(setItems);
+  }, []);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -43,7 +54,7 @@ export default function FateBox() {
     setError("");
     setImageBroken(false);
     setRolledName(resolved);
-    setFate(rollFate());
+    setFate(rollFate(Math.random, items));
   }
 
   return (

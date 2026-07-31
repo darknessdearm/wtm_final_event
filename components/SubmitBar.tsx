@@ -6,7 +6,7 @@ import {
   type Character,
   type CharacterStatus,
 } from "@/lib/data";
-import { submitCharacter } from "@/lib/firebase";
+import { submitCharacter } from "@/lib/firebaseClient";
 import {
   MAX_NAME_LENGTH,
   NAME_REQUIRED_ERROR,
@@ -15,9 +15,9 @@ import {
 
 const STATUS_OPTIONS: CharacterStatus[] = ["alive", "dead", "lost"];
 
-// submitCharacter() is a no-op today, but it's the documented swap point for
-// a real database call (see lib/firebase.ts). Once that call can actually
-// reject, this is the message shown instead of silently dropping the entry.
+// submitCharacter() writes to Realtime Database and rejects if the write fails
+// (offline, permission denied). This is the message shown then, instead of
+// silently dropping the entry.
 const SUBMIT_FAILED_ERROR = "Could not save your entry. Please try again.";
 
 // Defensive cross-platform fallback: native <select>/<option> text is
