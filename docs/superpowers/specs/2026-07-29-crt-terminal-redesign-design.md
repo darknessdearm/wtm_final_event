@@ -23,15 +23,15 @@ verbatim from the exports.
 
 ## Decisions
 
-| Question | Decision |
-| --- | --- |
-| Fade trigger | Continuous, tied to countdown progress |
+| Question                   | Decision                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| Fade trigger               | Continuous, tied to countdown progress                                       |
 | สถานการณ์ (situation) slot | Dropped — no data source exists; use scene1's 2-slot sentence in both phases |
-| Roll behavior | Fresh random on every Enter press |
-| Item pool | All 26 items; `isOnlyOne` / `ishidden` / `isLocked` ignored |
-| Roster statuses | alive / dead / lost + `isNpc` flag; NPC censors when dead |
-| Roster motion | Keep the existing auto-scroll marquee |
-| Submit button | Local-only session insert behind a Firebase-ready `submitCharacter()` |
+| Roll behavior              | Fresh random on every Enter press                                            |
+| Item pool                  | All 26 items; `isOnlyOne` / `ishidden` / `isLocked` ignored                  |
+| Roster statuses            | alive / dead / lost + `isNpc` flag; NPC censors when dead                    |
+| Roster motion              | Keep the existing auto-scroll marquee                                        |
+| Submit button              | Local-only session insert behind a Firebase-ready `submitCharacter()`        |
 
 ## Architecture
 
@@ -74,18 +74,22 @@ hydration mismatch.
 Chrome tokens interpolate their scene1 value toward their scene2 value:
 
 ```css
---c-text:     color-mix(in oklab, #38CF4E calc((1 - var(--decay)) * 100%), #FFFFFF);
---c-text-dim: color-mix(in oklab, #315933 calc((1 - var(--decay)) * 100%), #B3B3B3);
---c-glow:     color-mix(in oklab, #20B369 calc((1 - var(--decay)) * 100%), #620202);
---c-rule:     color-mix(in oklab, #38CF4E calc((1 - var(--decay)) * 100%), #FFFFFF);
+--c-text: color-mix(in oklab, #38cf4e calc((1 - var(--decay)) * 100%), #ffffff);
+--c-text-dim: color-mix(
+  in oklab,
+  #315933 calc((1 - var(--decay)) * 100%),
+  #b3b3b3
+);
+--c-glow: color-mix(in oklab, #20b369 calc((1 - var(--decay)) * 100%), #620202);
+--c-rule: color-mix(in oklab, #38cf4e calc((1 - var(--decay)) * 100%), #ffffff);
 ```
 
-| Token | Green | Red | Applied to |
-| --- | --- | --- | --- |
-| `--c-text` | `#38CF4E` | `#FFFFFF` | countdown, labels, result sentence |
+| Token          | Green     | Red       | Applied to                          |
+| -------------- | --------- | --------- | ----------------------------------- |
+| `--c-text`     | `#38CF4E` | `#FFFFFF` | countdown, labels, result sentence  |
 | `--c-text-dim` | `#315933` | `#B3B3B3` | event tag, captions, event duration |
-| `--c-glow` | `#20B369` | `#620202` | blurred countdown layer |
-| `--c-rule` | `#38CF4E` | `#FFFFFF` | dashed frames, hairline separators |
+| `--c-glow`     | `#20B369` | `#620202` | blurred countdown layer             |
+| `--c-rule`     | `#38CF4E` | `#FFFFFF` | dashed frames, hairline separators  |
 
 Roster tokens are read off the "Survival List" region of the two Figma
 exports (`Alive` / `Dead` / `Lost` / `Npc` layer labels, and the six
@@ -94,20 +98,24 @@ the same hex in both scenes; the other two genuinely shift, so they
 interpolate like the chrome tokens above:
 
 ```css
---c-alive:  #38CF4E;
---c-dead:   #A40000;
---c-lost:   color-mix(in oklab, #FF9D00 calc((1 - var(--decay)) * 100%), #CFAC38);
---c-npc:    #446944;
---c-censor: color-mix(in oklab, #446944 calc((1 - var(--decay)) * 100%), #1E1F1F);
+--c-alive: #38cf4e;
+--c-dead: #a40000;
+--c-lost: color-mix(in oklab, #ff9d00 calc((1 - var(--decay)) * 100%), #cfac38);
+--c-npc: #446944;
+--c-censor: color-mix(
+  in oklab,
+  #446944 calc((1 - var(--decay)) * 100%),
+  #1e1f1f
+);
 ```
 
-| Token | Green | Red | Applied to |
-| --- | --- | --- | --- |
-| `--c-alive` | `#38CF4E` | `#38CF4E` (flat) | alive names |
-| `--c-dead` | `#A40000` | `#A40000` (flat) | dead names |
-| `--c-lost` | `#FF9D00` | `#CFAC38` | lost names |
-| `--c-npc` | `#446944` | `#446944` (flat) | NPC names (dimmed) |
-| `--c-censor` | `#446944` | `#1E1F1F` | redaction bars |
+| Token        | Green     | Red              | Applied to         |
+| ------------ | --------- | ---------------- | ------------------ |
+| `--c-alive`  | `#38CF4E` | `#38CF4E` (flat) | alive names        |
+| `--c-dead`   | `#A40000` | `#A40000` (flat) | dead names         |
+| `--c-lost`   | `#FF9D00` | `#CFAC38`        | lost names         |
+| `--c-npc`    | `#446944` | `#446944` (flat) | NPC names (dimmed) |
+| `--c-censor` | `#446944` | `#1E1F1F`        | redaction bars     |
 
 A single absolutely-positioned overlay carries scene2's gradient
 (`linear-gradient(180deg, #FF0000 0%, rgba(115,115,115,0) 77.88%,
@@ -130,11 +138,11 @@ instead of rendering tofu.
 
 The Figma canvas is a fixed 1920px. Sizes become fluid:
 
-| Element | Figma | Responsive |
-| --- | --- | --- |
-| Countdown | 96px, `letter-spacing: .15em` | `clamp(1.75rem, 7vw, 6rem)` |
-| Event duration | 64px | `clamp(1.125rem, 3.4vw, 4rem)` |
-| System log / event tag | 36px | `clamp(0.75rem, 1.9vw, 2.25rem)` |
+| Element                | Figma                         | Responsive                       |
+| ---------------------- | ----------------------------- | -------------------------------- |
+| Countdown              | 96px, `letter-spacing: .15em` | `clamp(1.75rem, 7vw, 6rem)`      |
+| Event duration         | 64px                          | `clamp(1.125rem, 3.4vw, 4rem)`   |
+| System log / event tag | 36px                          | `clamp(0.75rem, 1.9vw, 2.25rem)` |
 
 Dashed frames are `1px dashed var(--c-rule)`. The roster collapses from three
 columns to one below the `sm` breakpoint.
@@ -171,7 +179,7 @@ only in response to a user click or Enter key, so it never runs during SSR.
 `lib/data.ts` changes:
 
 ```ts
-export type CharacterStatus = 'alive' | 'dead' | 'lost';
+export type CharacterStatus = "alive" | "dead" | "lost";
 
 export interface Character {
   id: string;
@@ -183,20 +191,20 @@ export interface Character {
 ```
 
 `isNpc` is a separate flag rather than a fourth enum member because NPC-ness and
-aliveness are independent — the legend rule *"Npc — Alive if Dead, will censor"*
+aliveness are independent — the legend rule _"Npc — Alive if Dead, will censor"_
 requires knowing both. The legend still renders four chips.
 
 Rendering rules:
 
 Evaluated top to bottom; the first matching row wins:
 
-| Condition | Render |
-| --- | --- |
+| Condition                    | Render                                    |
+| ---------------------------- | ----------------------------------------- |
 | `isNpc && status === 'dead'` | solid `--c-censor` bar, name not rendered |
-| `isNpc` | name in `--c-npc` |
-| `status === 'dead'` | name in `--c-dead` |
-| `status === 'lost'` | name in `--c-lost` |
-| `status === 'alive'` | name in `--c-alive` |
+| `isNpc`                      | name in `--c-npc`                         |
+| `status === 'dead'`          | name in `--c-dead`                        |
+| `status === 'lost'`          | name in `--c-lost`                        |
+| `status === 'alive'`         | name in `--c-alive`                       |
 
 The censor bar keeps the name's line height and takes a width derived from the
 name's character count, so redactions vary in length like the mockups.
@@ -225,7 +233,7 @@ make separately.
 ```
 app/page.tsx (server, calls getCharacters())
 └── <main>                     noise-bg + <RedOverlay/> (opacity: --decay)
-    ├── <SystemLog/>           "SYSTEM LOG V.2.0.1 - May 13, 2001" + hairline
+    ├── <SystemLog/>           "SYSTEM LOG V.2.0.1 - May 07, 2001" + hairline
     ├── <Emblem/>              murrwood seal
     ├── <EventTag/>            "#WTM_EVENT_05 : THE FINAL CHAPTER"
     ├── <Countdown/>    client two stacked layers: blur(5.25px) glow + sharp text
@@ -278,25 +286,25 @@ dashed frame, legend, and submit bar.
 
 ## Error handling
 
-| Case | Behavior |
-| --- | --- |
-| Item image 404 | `onError` swaps in the `<Image of Item>` placeholder text |
-| Before `EVENT_START` | `--decay` = 0; countdown shows the full remaining window |
-| After `EVENT_DEADLINE` | `--decay` = 1; countdown pins to `0 Days 0 Hours 0 Minute left` |
+| Case                     | Behavior                                                                                              |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Item image 404           | `onError` swaps in the `<Image of Item>` placeholder text                                             |
+| Before `EVENT_START`     | `--decay` = 0; countdown shows the full remaining window                                              |
+| After `EVENT_DEADLINE`   | `--decay` = 1; countdown pins to `0 Days 0 Hours 0 Minute left`                                       |
 | `prefers-reduced-motion` | Marquee disabled (existing); color transitions freeze at the computed `--decay` rather than animating |
-| Duplicate submitted name | Allowed; no deduplication |
+| Duplicate submitted name | Allowed; no deduplication                                                                             |
 
 ## Verification
 
 The repo has no test infrastructure today. Add **vitest** covering pure
 functions only — no DOM harness:
 
-| Test | Covers |
-| --- | --- |
-| `decay.test.ts` | boundaries, clamping, `deadline <= start` guard |
-| `items.test.ts` | `imgUrl` normalization incl. base-path prefixing; 26 entries |
-| `roll.test.ts` | `rollFate()` draws only from the 26 / 27 pools |
-| `censor.test.ts` | the `isNpc && dead` predicate and the other three cases |
+| Test             | Covers                                                       |
+| ---------------- | ------------------------------------------------------------ |
+| `decay.test.ts`  | boundaries, clamping, `deadline <= start` guard              |
+| `items.test.ts`  | `imgUrl` normalization incl. base-path prefixing; 26 entries |
+| `roll.test.ts`   | `rollFate()` draws only from the 26 / 27 pools               |
+| `censor.test.ts` | the `isNpc && dead` predicate and the other three cases      |
 
 Visual behavior is verified by running `npm run dev` and confirming
 `npm run build` still produces a clean static export to `./out`.

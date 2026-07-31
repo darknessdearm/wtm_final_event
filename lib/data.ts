@@ -1,14 +1,22 @@
 // ---------------------------------------------------------------------------
-// Domain types + mock data.
+// Domain types + the seed roster.
 //
-// Everything here is placeholder content that mirrors the shape we expect from
-// Firebase Realtime Database. When the DB is wired up (see lib/firebase.ts) the
-// only thing that changes is *where* `getCharacters()` reads from — the rest of
-// the UI keeps consuming the same `Character` shape.
+// This roster is no longer a placeholder: scripts/seed-final-event.mjs wrote it
+// verbatim to `final_event/characters`, so the database holds exactly these
+// entries in exactly this order. It stays in the bundle for two reasons —
+// it renders the static export (which cannot read the database at build time),
+// and it is the fallback whenever live data is unavailable.
+//
+// Regenerating it here therefore drifts from the database until the seed script
+// is re-run with --force. See lib/firebase.ts.
 // ---------------------------------------------------------------------------
 
-/** รอด = alive, ตาย = dead, สาบสูญ = lost. */
-export type CharacterStatus = 'alive' | 'dead' | 'lost';
+/**
+ * รอด = alive, ตาย = dead, สาบสูญ = lost.
+ *
+ * Players use all three; seeded NPCs only ever carry alive or dead.
+ */
+export type CharacterStatus = "alive" | "dead" | "lost";
 
 export interface Character {
   id: string;
@@ -18,9 +26,12 @@ export interface Character {
   role: string;
   status: CharacterStatus;
   /**
-   * NPCs are dimmed in the roster, and a *dead* NPC has their name redacted
-   * entirely — "Npc - Alive if Dead, will censor" in the legend. NPC-ness is
-   * independent of aliveness, so it is a flag rather than a fourth status.
+   * NPCs are dimmed in the roster, and a *dead* NPC has their name struck
+   * through — "Npc - Alive if Dead" in the legend. NPC-ness is independent of
+   * aliveness, so it is a flag rather than a fourth status.
+   *
+   * This is also what separates the two ways into the roster: every seeded
+   * character is an NPC, and everyone who submits the form is a player.
    */
   isNpc: boolean;
 }
@@ -30,53 +41,149 @@ export interface Character {
 // EVENT_DEADLINE it shows all zeros (see computeCountdown in lib/countdown.ts).
 // Change these two lines to reschedule. If you meant the *end* of Aug 22 rather
 // than its first midnight, use '2026-08-23T00:00:00+07:00' for the deadline.
-export const EVENT_START = '2026-08-01T00:00:00+07:00';
-export const EVENT_DEADLINE = '2026-08-22T00:00:00+07:00';
+export const EVENT_START = "2026-08-01T00:00:00+07:00";
+export const EVENT_DEADLINE = "2026-08-22T00:00:00+07:00";
 
-export const EVENT_TITLE = 'WTM Final Event';
-export const EVENT_DESCRIPTION = 'สุ่มสถานการณ์ประจำสัปดาห์ · Week 3';
+export const EVENT_TITLE = "WTM Final Event";
+export const EVENT_DESCRIPTION = "สุ่มสถานการณ์ประจำสัปดาห์ · Week 3";
 /** Small subtitle under the countdown showing the event window. */
-export const EVENT_WINDOW_LABEL = 'Event Duration: August 01 - 21, 2026';
+export const EVENT_WINDOW_LABEL = "Event Duration: August 01 - 21, 2026";
 
 /** Short Thai word for each status — used for the status <option> labels in SubmitBar. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
-  alive: 'รอด',
-  dead: 'ตาย',
-  lost: 'สาบสูญ',
+  alive: "Alive",
+  dead: "Dead",
+  lost: "Missing",
 };
 
-// The nine hand-authored characters. These stay in the roster verbatim; the
+// The four hand-authored characters. These stay in the roster verbatim; the
 // rest of the credits list is generated from the name pools below.
+//
+// Like every seeded entry they are NPCs, so Jeffrey McPine — the one dead
+// name here — renders struck through.
 const FEATURED_CHARACTERS: Character[] = [
-  { id: 'c01', name: 'Ethan Cole', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c02', name: 'Olivia Reed', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c03', name: 'Marcus Bell', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c04', name: 'Liam Foster', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c05', name: 'Chloe Grant', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c06', name: 'Noah Blake', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c07', name: 'Ava Sinclair', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c08', name: 'Mason Hale', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
-  { id: 'c09', name: 'Isla Monroe', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
+  {
+    id: "c01",
+    name: "Jeffrey McPine",
+    role: "ตัวประกอบฉาก",
+    status: "dead",
+    isNpc: true,
+  },
+  {
+    id: "c02",
+    name: "Charlie Kiddington",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: true,
+  },
+  {
+    id: "c03",
+    name: "Felico Wise",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: true,
+  },
+  {
+    id: "c04",
+    name: "RedWood [sk'aWk'os]",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: true,
+  },
 ];
 
 // Name pools the generator mixes together. The featured names' own first/last
 // names are folded in so the whole roster reads as one consistent cast.
 const FIRST_NAMES = [
-  'Ethan', 'Olivia', 'Marcus', 'Liam', 'Chloe', 'Noah', 'Ava', 'Mason', 'Isla',
-  'Emma', 'Lucas', 'Sophia', 'Owen', 'Mia', 'Caleb', 'Grace', 'Julian', 'Hazel',
-  'Nathan', 'Ruby', 'Elias', 'Nora', 'Adrian', 'Violet', 'Silas', 'Clara',
-  'Felix', 'Iris', 'Theo', 'Alice', 'Milo', 'Elena', 'Jasper', 'Freya', 'Hugo',
-  'Stella', 'Leo', 'Cora', 'Rowan', 'Maya', 'Dorian', 'Lena', 'Simon', 'Vera',
-  'Aaron', 'Willa',
+  "Ethan",
+  "Olivia",
+  "Marcus",
+  "Liam",
+  "Chloe",
+  "Noah",
+  "Ava",
+  "Mason",
+  "Isla",
+  "Emma",
+  "Lucas",
+  "Sophia",
+  "Owen",
+  "Mia",
+  "Caleb",
+  "Grace",
+  "Julian",
+  "Hazel",
+  "Nathan",
+  "Ruby",
+  "Elias",
+  "Nora",
+  "Adrian",
+  "Violet",
+  "Silas",
+  "Clara",
+  "Felix",
+  "Iris",
+  "Theo",
+  "Alice",
+  "Milo",
+  "Elena",
+  "Jasper",
+  "Freya",
+  "Hugo",
+  "Stella",
+  "Leo",
+  "Cora",
+  "Rowan",
+  "Maya",
+  "Dorian",
+  "Lena",
+  "Simon",
+  "Vera",
+  "Aaron",
+  "Willa",
 ];
 
 const LAST_NAMES = [
-  'Cole', 'Reed', 'Bell', 'Foster', 'Grant', 'Blake', 'Sinclair', 'Hale',
-  'Monroe', 'Vance', 'Hart', 'Frost', 'Wells', 'Quinn', 'Marsh', 'Rhodes',
-  'Boyd', 'Lang', 'Pierce', 'Cross', 'Sloan', 'Weaver', 'Nash', 'Fields',
-  'Dalton', 'Byrne', 'Rourke', 'Ellis', 'Payne', 'Shaw', 'Vaughn', 'Mercer',
-  'Holloway', 'Ashford', 'Calloway', 'Winters', 'Thorne', 'Beckett', 'Sterling',
-  'Abbott',
+  "Cole",
+  "Reed",
+  "Bell",
+  "Foster",
+  "Grant",
+  "Blake",
+  "Sinclair",
+  "Hale",
+  "Monroe",
+  "Vance",
+  "Hart",
+  "Frost",
+  "Wells",
+  "Quinn",
+  "Marsh",
+  "Rhodes",
+  "Boyd",
+  "Lang",
+  "Pierce",
+  "Cross",
+  "Sloan",
+  "Weaver",
+  "Nash",
+  "Fields",
+  "Dalton",
+  "Byrne",
+  "Rourke",
+  "Ellis",
+  "Payne",
+  "Shaw",
+  "Vaughn",
+  "Mercer",
+  "Holloway",
+  "Ashford",
+  "Calloway",
+  "Winters",
+  "Thorne",
+  "Beckett",
+  "Sterling",
+  "Abbott",
 ];
 
 // Seeded PRNG (mulberry32) so the generated roster is identical on every build.
@@ -103,9 +210,21 @@ function shuffle<T>(items: T[], rand: () => number): T[] {
 }
 
 /**
+ * Share of seeded NPCs that are dead, and therefore struck through in the roll.
+ *
+ * Seeded NPCs carry only alive/dead, so the roster's original alive:dead
+ * balance of 42:38 becomes 38/(42+38) here — the same proportion with `lost`
+ * folded away. Because every seeded entry is an NPC, this doubles as the share
+ * of the credits roll that renders struck through.
+ */
+const NPC_DEAD_RATE = 0.475;
+
+/**
  * Build `count` unique extra characters by mixing the first/last name pools.
- * Statuses are weighted ~ alive / dead / lost so the roll feels like the
- * aftermath of a survival scenario rather than an even split.
+ *
+ * Every generated entry is an NPC with a status of alive or dead — `lost`
+ * (Missing) is reserved for players, who only enter the roster by submitting
+ * the form. See the legend in components/StatusLegend.tsx.
  */
 function generateCharacters(
   count: number,
@@ -124,26 +243,21 @@ function generateCharacters(
     if (seen.has(name)) continue;
     seen.add(name);
 
-    const r = rand();
-    const status: CharacterStatus =
-      r < 0.42 ? 'alive' : r < 0.8 ? 'dead' : 'lost';
-    // Roughly a quarter of the generated cast are NPCs; the dead ones among
-    // them render as redaction bars.
-    const isNpc = rand() < 0.25;
+    const status: CharacterStatus = rand() < NPC_DEAD_RATE ? "dead" : "alive";
     out.push({
-      id: `g${String(++n).padStart(3, '0')}`,
+      id: `g${String(++n).padStart(3, "0")}`,
       name,
-      role: 'ตัวประกอบฉาก',
+      role: "ตัวประกอบฉาก",
       status,
-      isNpc,
+      isNpc: true,
     });
   }
   return out;
 }
 
-// The full roster: the nine featured characters plus 111 generated ones (120
-// total, > 100 as required), all shuffled together so alive / dead / lost
-// are interleaved for the end-credits roll.
+// The full roster: the four featured characters plus 111 generated ones (115
+// total, > 100 as required), all shuffled together so alive and dead names are
+// interleaved for the end-credits roll.
 const ROSTER: Character[] = shuffle(
   [
     ...FEATURED_CHARACTERS,

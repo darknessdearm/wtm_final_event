@@ -1,16 +1,24 @@
-'use client';
+"use client";
 
-import { useState, type FormEvent } from 'react';
-import { STATUS_SHORT_LABEL, type Character, type CharacterStatus } from '@/lib/data';
-import { submitCharacter } from '@/lib/firebase';
-import { MAX_NAME_LENGTH, NAME_REQUIRED_ERROR, resolveName } from '@/lib/validateName';
+import { useState, type FormEvent } from "react";
+import {
+  STATUS_SHORT_LABEL,
+  type Character,
+  type CharacterStatus,
+} from "@/lib/data";
+import { submitCharacter } from "@/lib/firebaseClient";
+import {
+  MAX_NAME_LENGTH,
+  NAME_REQUIRED_ERROR,
+  resolveName,
+} from "@/lib/validateName";
 
-const STATUS_OPTIONS: CharacterStatus[] = ['alive', 'dead', 'lost'];
+const STATUS_OPTIONS: CharacterStatus[] = ["alive", "dead", "lost"];
 
-// submitCharacter() is a no-op today, but it's the documented swap point for
-// a real database call (see lib/firebase.ts). Once that call can actually
-// reject, this is the message shown instead of silently dropping the entry.
-const SUBMIT_FAILED_ERROR = 'Could not save your entry. Please try again.';
+// submitCharacter() writes to Realtime Database and rejects if the write fails
+// (offline, permission denied). This is the message shown then, instead of
+// silently dropping the entry.
+const SUBMIT_FAILED_ERROR = "Could not save your entry. Please try again.";
 
 // Defensive cross-platform fallback: native <select>/<option> text is
 // painted by the OS, not the page, and how that text picks up a webfont
@@ -34,9 +42,9 @@ export default function SubmitBar({
 }: {
   onSubmitted: (character: Character) => void;
 }) {
-  const [name, setName] = useState('');
-  const [status, setStatus] = useState<CharacterStatus>('alive');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState<CharacterStatus>("alive");
+  const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -47,7 +55,7 @@ export default function SubmitBar({
       return;
     }
 
-    setError('');
+    setError("");
 
     try {
       await submitCharacter({ name: resolved, status });
@@ -59,18 +67,21 @@ export default function SubmitBar({
     onSubmitted({
       id: `submitted-${Date.now()}`,
       name: resolved,
-      role: 'ตัวประกอบฉาก',
+      role: "ตัวประกอบฉาก",
       status,
       isNpc: false,
     });
-    setName('');
+    setName("");
   }
 
   return (
     <form onSubmit={handleSubmit} className="mt-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-[2fr_1fr]">
         <div className="frame-dashed flex items-center gap-3 px-4 py-3">
-          <label htmlFor="submit-name" className="whitespace-nowrap text-panel text-scene">
+          <label
+            htmlFor="submit-name"
+            className="whitespace-nowrap text-panel text-scene"
+          >
             Add your name here:
           </label>
           <input
@@ -84,7 +95,10 @@ export default function SubmitBar({
         </div>
 
         <div className="frame-dashed flex items-center gap-3 px-4 py-3">
-          <label htmlFor="submit-status" className="whitespace-nowrap text-panel text-scene">
+          <label
+            htmlFor="submit-status"
+            className="whitespace-nowrap text-panel text-scene"
+          >
             status :
           </label>
           <select
@@ -92,14 +106,12 @@ export default function SubmitBar({
             value={status}
             onChange={(e) => setStatus(e.target.value as CharacterStatus)}
             className="min-w-0 flex-1 cursor-pointer appearance-none bg-transparent text-panel text-scene outline-none"
-            style={{ fontFamily: STATUS_FONT_FAMILY }}
           >
             {STATUS_OPTIONS.map((option) => (
               <option
                 key={option}
                 value={option}
                 className="bg-black text-white"
-                style={{ fontFamily: STATUS_FONT_FAMILY }}
               >
                 {STATUS_SHORT_LABEL[option]}
               </option>

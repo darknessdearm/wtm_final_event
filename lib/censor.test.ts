@@ -1,36 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { censorWidthCh, isCensored } from '@/lib/censor';
+import { isCensored } from '@/lib/censor';
 import { getMockCharacters } from '@/lib/data';
 
 describe('isCensored', () => {
-  it('censors a dead NPC', () => {
+  it('strikes through a dead NPC', () => {
     expect(isCensored({ status: 'dead', isNpc: true })).toBe(true);
   });
 
-  it('does not censor a living NPC', () => {
+  it('leaves a living NPC alone', () => {
     expect(isCensored({ status: 'alive', isNpc: true })).toBe(false);
   });
 
-  it('does not censor a lost NPC', () => {
+  it('leaves a lost NPC alone', () => {
     expect(isCensored({ status: 'lost', isNpc: true })).toBe(false);
   });
 
-  it('does not censor a dead player character', () => {
+  it('leaves a dead player alone', () => {
+    // Players are struck through only if they are also NPCs, which the submit
+    // form never creates.
     expect(isCensored({ status: 'dead', isNpc: false })).toBe(false);
-  });
-});
-
-describe('censorWidthCh', () => {
-  it('scales with the name length', () => {
-    expect(censorWidthCh('Ethan Cole')).toBe(10);
-  });
-
-  it('clamps very short names up to a readable minimum', () => {
-    expect(censorWidthCh('Al')).toBe(6);
-  });
-
-  it('clamps very long names down to the column width', () => {
-    expect(censorWidthCh('Bartholomew Winterbottom')).toBe(18);
   });
 });
 
@@ -49,7 +37,7 @@ describe('roster', () => {
     }
   });
 
-  it('produces at least one censored entry', () => {
+  it('produces at least one struck-through entry', () => {
     expect(roster.some(isCensored)).toBe(true);
   });
 });

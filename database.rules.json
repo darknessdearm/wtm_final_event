@@ -1,0 +1,78 @@
+// Recommended Realtime Database rules — NOT yet deployed.
+//
+// The database is currently world-readable AND world-writable: anyone who knows
+// the URL can delete every node in it. These close that while keeping both apps
+// working.
+//
+// Deploy by pasting into Console > Realtime Database > Rules, or:
+//     firebase deploy --only database
+//
+// Seed final_event/ BEFORE deploying — these intentionally forbid the bulk
+// writes that scripts/seed-final-event.mjs makes.
+//
+// Only `rules` may appear at the top level, and every key inside it that does
+// not start with "." is a PATH NAME whose value must be an object — which is
+// why the notes here are `//` comments rather than "_comment" keys.
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    // Owned by the other app. Left exactly as open as they are today so
+    // nothing breaks; tighten once that app can authenticate.
+    "characters": {
+      ".read": true,
+      ".write": true
+    },
+    "itemPool": {
+      ".read": true,
+      ".write": true
+    },
+
+    // This site's subtree.
+    "final_event": {
+      // Public read; edit item text from the Firebase console only.
+      "items": {
+        ".read": true,
+        ".write": false
+      },
+
+      "characters": {
+        ".read": true,
+
+        "$entry": {
+          // Create-only. A visitor can add a name but can never edit or
+          // delete one, so the roster cannot be vandalised or wiped from a
+          // browser. This is also what blocks the seed script.
+          ".write": "!data.exists() && newData.exists()",
+          ".validate": "newData.hasChildren(['name', 'status'])",
+
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 40"
+          },
+          "role": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          },
+          "status": {
+            ".validate": "newData.val() == 'alive' || newData.val() == 'dead' || newData.val() == 'lost'"
+          },
+          // Submissions are always players, never NPCs — so the form can
+          // never create a censored entry.
+          "isNpc": {
+            ".validate": "newData.isBoolean() && newData.val() == false"
+          },
+          "createdAt": {
+            ".validate": "newData.val() == now"
+          },
+
+          // Rejects any field not named above. If submissions start failing
+          // after deploying, delete this block first — it is hardening, not
+          // load-bearing.
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    }
+  }
+}

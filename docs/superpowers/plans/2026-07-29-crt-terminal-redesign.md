@@ -23,7 +23,7 @@
 - **Item pool is all 26 items.** `isOnlyOne` / `ishidden` / `isLocked` are carried on the type but never filter.
 - **TypeScript is strict.** `npx tsc --noEmit` must pass at the end of every task.
 - **Exact copy strings** (used verbatim, do not paraphrase):
-  - `SYSTEM LOG V.2.0.1 - May 13, 2001`
+  - `SYSTEM LOG V.2.0.1 - May 07, 2001`
   - `#WTM_EVENT_05 : THE FINAL CHAPTER`
   - `Event Duration: August 01 - 21, 2026`
   - `What will happened with you?`
@@ -42,12 +42,14 @@
 Adds vitest and the pure function that drives the entire theme.
 
 **Files:**
+
 - Create: `vitest.config.ts`
 - Create: `lib/decay.ts`
 - Create: `lib/decay.test.ts`
 - Modify: `package.json` (add `test` script + vitest devDependency)
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: `computeDecay(now: number, start: number, deadline: number): number` — returns a value in `[0, 1]`.
 
@@ -71,18 +73,18 @@ In `package.json`, add to `"scripts"` (after `"lint"`):
 Create `vitest.config.ts`. The alias mirrors the `@/*` path in `tsconfig.json`; without it the test files cannot import `@/lib/...`.
 
 ```ts
-import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('.', import.meta.url)),
+      "@": fileURLToPath(new URL(".", import.meta.url)),
     },
   },
   test: {
-    environment: 'node',
-    include: ['lib/**/*.test.ts'],
+    environment: "node",
+    include: ["lib/**/*.test.ts"],
   },
 });
 ```
@@ -92,39 +94,39 @@ export default defineConfig({
 Create `lib/decay.test.ts`:
 
 ```ts
-import { describe, expect, it } from 'vitest';
-import { computeDecay } from '@/lib/decay';
+import { describe, expect, it } from "vitest";
+import { computeDecay } from "@/lib/decay";
 
 const START = Date.UTC(2026, 7, 1);
 const END = Date.UTC(2026, 7, 22);
 
-describe('computeDecay', () => {
-  it('is 0 before the campaign starts', () => {
+describe("computeDecay", () => {
+  it("is 0 before the campaign starts", () => {
     expect(computeDecay(START - 86_400_000, START, END)).toBe(0);
   });
 
-  it('is 0 exactly at the start', () => {
+  it("is 0 exactly at the start", () => {
     expect(computeDecay(START, START, END)).toBe(0);
   });
 
-  it('is 0.5 at the midpoint', () => {
+  it("is 0.5 at the midpoint", () => {
     expect(computeDecay((START + END) / 2, START, END)).toBeCloseTo(0.5, 10);
   });
 
-  it('is 1 exactly at the deadline', () => {
+  it("is 1 exactly at the deadline", () => {
     expect(computeDecay(END, START, END)).toBe(1);
   });
 
-  it('is 1 after the deadline', () => {
+  it("is 1 after the deadline", () => {
     expect(computeDecay(END + 86_400_000, START, END)).toBe(1);
   });
 
-  it('returns 1 when the window is inverted or empty', () => {
+  it("returns 1 when the window is inverted or empty", () => {
     expect(computeDecay(START, END, START)).toBe(1);
     expect(computeDecay(START, START, START)).toBe(1);
   });
 
-  it('returns 0 for non-finite inputs rather than NaN', () => {
+  it("returns 0 for non-finite inputs rather than NaN", () => {
     expect(computeDecay(NaN, START, END)).toBe(0);
     expect(computeDecay(START, NaN, END)).toBe(0);
   });
@@ -160,7 +162,11 @@ export function computeDecay(
   start: number,
   deadline: number,
 ): number {
-  if (!Number.isFinite(now) || !Number.isFinite(start) || !Number.isFinite(deadline)) {
+  if (
+    !Number.isFinite(now) ||
+    !Number.isFinite(start) ||
+    !Number.isFinite(deadline)
+  ) {
     return 0;
   }
   if (deadline <= start) return 1;
@@ -198,10 +204,12 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Normalizes the Windows-style image paths in `itemsData.json` into browser URLs.
 
 **Files:**
+
 - Create: `lib/items.ts`
 - Create: `lib/items.test.ts`
 
 **Interfaces:**
+
 - Consumes: `lib/itemsData.json` (existing, 26 entries).
 - Produces:
   - `interface Item { id, name, description, imgUrl, isOnlyOne, ishidden, isLocked }`
@@ -213,47 +221,49 @@ Normalizes the Windows-style image paths in `itemsData.json` into browser URLs.
 Create `lib/items.test.ts`:
 
 ```ts
-import { describe, expect, it } from 'vitest';
-import { ITEMS, normalizeImgUrl } from '@/lib/items';
+import { describe, expect, it } from "vitest";
+import { ITEMS, normalizeImgUrl } from "@/lib/items";
 
-describe('normalizeImgUrl', () => {
-  it('converts Windows separators to URL separators', () => {
-    expect(normalizeImgUrl('public\\assets\\item\\01.png', '')).toBe(
-      '/assets/item/01.png',
+describe("normalizeImgUrl", () => {
+  it("converts Windows separators to URL separators", () => {
+    expect(normalizeImgUrl("public\\assets\\item\\01.png", "")).toBe(
+      "/assets/item/01.png",
     );
   });
 
-  it('strips the leading public/ segment', () => {
-    expect(normalizeImgUrl('public/assets/item/26.png', '')).toBe(
-      '/assets/item/26.png',
+  it("strips the leading public/ segment", () => {
+    expect(normalizeImgUrl("public/assets/item/26.png", "")).toBe(
+      "/assets/item/26.png",
     );
   });
 
-  it('prefixes the deploy base path', () => {
-    expect(normalizeImgUrl('public\\assets\\item\\02.png', '/wtm_final_event')).toBe(
-      '/wtm_final_event/assets/item/02.png',
-    );
+  it("prefixes the deploy base path", () => {
+    expect(
+      normalizeImgUrl("public\\assets\\item\\02.png", "/wtm_final_event"),
+    ).toBe("/wtm_final_event/assets/item/02.png");
   });
 
-  it('never produces a doubled slash', () => {
-    expect(normalizeImgUrl('/public/assets/item/03.png', '')).not.toContain('//');
+  it("never produces a doubled slash", () => {
+    expect(normalizeImgUrl("/public/assets/item/03.png", "")).not.toContain(
+      "//",
+    );
   });
 });
 
-describe('ITEMS', () => {
-  it('exposes every item in the source file', () => {
+describe("ITEMS", () => {
+  it("exposes every item in the source file", () => {
     expect(ITEMS).toHaveLength(26);
   });
 
-  it('normalizes every image path', () => {
+  it("normalizes every image path", () => {
     for (const item of ITEMS) {
       expect(item.imgUrl).toMatch(/\/assets\/item\/\d{2}\.png$/);
-      expect(item.imgUrl).not.toContain('\\');
-      expect(item.imgUrl).not.toContain('public/');
+      expect(item.imgUrl).not.toContain("\\");
+      expect(item.imgUrl).not.toContain("public/");
     }
   });
 
-  it('keeps ids, names and descriptions intact', () => {
+  it("keeps ids, names and descriptions intact", () => {
     for (const item of ITEMS) {
       expect(item.id).toMatch(/^item-\d+$/);
       expect(item.name.length).toBeGreaterThan(0);
@@ -281,9 +291,9 @@ Create `lib/items.ts`:
 // deployed base path instead, so every path is normalized once at module load.
 // ---------------------------------------------------------------------------
 
-import itemsData from './itemsData.json';
+import itemsData from "./itemsData.json";
 
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export interface Item {
   id: string;
@@ -305,11 +315,14 @@ export interface Item {
  * of the 26 items is drawable. They are kept so a future change can gate them
  * without reshaping the data.
  */
-export function normalizeImgUrl(raw: string, basePath: string = BASE_PATH): string {
+export function normalizeImgUrl(
+  raw: string,
+  basePath: string = BASE_PATH,
+): string {
   const path = raw
-    .replace(/\\/g, '/')
-    .replace(/^\/+/, '')
-    .replace(/^public\//, '');
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "")
+    .replace(/^public\//, "");
   return `${basePath}/${path}`;
 }
 
@@ -343,11 +356,13 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ### Task 3: Damage pool and the fate roll
 
 **Files:**
+
 - Create: `lib/damage.ts`
 - Create: `lib/roll.ts`
 - Create: `lib/roll.test.ts`
 
 **Interfaces:**
+
 - Consumes: `ITEMS`, `Item` from `@/lib/items`; `lib/damageData.json` (27 strings).
 - Produces:
   - `DAMAGES: string[]`
@@ -359,32 +374,32 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Create `lib/roll.test.ts`:
 
 ```ts
-import { describe, expect, it } from 'vitest';
-import { DAMAGES } from '@/lib/damage';
-import { ITEMS } from '@/lib/items';
-import { rollFate } from '@/lib/roll';
+import { describe, expect, it } from "vitest";
+import { DAMAGES } from "@/lib/damage";
+import { ITEMS } from "@/lib/items";
+import { rollFate } from "@/lib/roll";
 
-describe('DAMAGES', () => {
-  it('exposes every injury in the source file', () => {
+describe("DAMAGES", () => {
+  it("exposes every injury in the source file", () => {
     expect(DAMAGES).toHaveLength(27);
-    expect(DAMAGES[0]).toBe('ไม่ได้บาดเจ็บ');
+    expect(DAMAGES[0]).toBe("ไม่ได้บาดเจ็บ");
   });
 });
 
-describe('rollFate', () => {
-  it('returns the first entry when the generator yields 0', () => {
+describe("rollFate", () => {
+  it("returns the first entry when the generator yields 0", () => {
     const fate = rollFate(() => 0);
     expect(fate.item).toBe(ITEMS[0]);
     expect(fate.damage).toBe(DAMAGES[0]);
   });
 
-  it('returns the last entry when the generator approaches 1', () => {
+  it("returns the last entry when the generator approaches 1", () => {
     const fate = rollFate(() => 0.999_999);
     expect(fate.item).toBe(ITEMS[ITEMS.length - 1]);
     expect(fate.damage).toBe(DAMAGES[DAMAGES.length - 1]);
   });
 
-  it('never draws outside the pools', () => {
+  it("never draws outside the pools", () => {
     for (let i = 0; i < 500; i++) {
       const fate = rollFate();
       expect(ITEMS).toContain(fate.item);
@@ -392,7 +407,7 @@ describe('rollFate', () => {
     }
   });
 
-  it('draws item and damage independently', () => {
+  it("draws item and damage independently", () => {
     // Alternating generator: item takes the 1st call, damage the 2nd.
     const values = [0, 0.999_999];
     let i = 0;
@@ -417,7 +432,7 @@ Create `lib/damage.ts`:
 // Injury pool — the < อาการบาดเจ็บ > slot of the result sentence.
 // ---------------------------------------------------------------------------
 
-import damageData from './damageData.json';
+import damageData from "./damageData.json";
 
 export const DAMAGES: string[] = damageData as string[];
 ```
@@ -434,8 +449,8 @@ Create `lib/roll.ts`:
 // the same person can keep pulling different outcomes.
 // ---------------------------------------------------------------------------
 
-import { DAMAGES } from './damage';
-import { ITEMS, type Item } from './items';
+import { DAMAGES } from "./damage";
+import { ITEMS, type Item } from "./items";
 
 export interface Fate {
   item: Item;
@@ -487,12 +502,14 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Migrates `survived/dead/missing` to `alive/dead/lost` plus an orthogonal `isNpc` flag, and adds the redaction predicate. `components/CreditsRoll.tsx` must be updated in the same task or the build breaks on the old status names.
 
 **Files:**
+
 - Modify: `lib/data.ts` (status type, `Character`, featured cast, generator, labels, columns)
 - Create: `lib/censor.ts`
 - Create: `lib/censor.test.ts`
 - Modify: `components/CreditsRoll.tsx:10-16` (status accent map keys only — full restyle happens in Task 10)
 
 **Interfaces:**
+
 - Consumes: nothing new.
 - Produces:
   - `type CharacterStatus = 'alive' | 'dead' | 'lost'`
@@ -507,58 +524,58 @@ Migrates `survived/dead/missing` to `alive/dead/lost` plus an orthogonal `isNpc`
 Create `lib/censor.test.ts`:
 
 ```ts
-import { describe, expect, it } from 'vitest';
-import { censorWidthCh, isCensored } from '@/lib/censor';
-import { getMockCharacters } from '@/lib/data';
+import { describe, expect, it } from "vitest";
+import { censorWidthCh, isCensored } from "@/lib/censor";
+import { getMockCharacters } from "@/lib/data";
 
-describe('isCensored', () => {
-  it('censors a dead NPC', () => {
-    expect(isCensored({ status: 'dead', isNpc: true })).toBe(true);
+describe("isCensored", () => {
+  it("censors a dead NPC", () => {
+    expect(isCensored({ status: "dead", isNpc: true })).toBe(true);
   });
 
-  it('does not censor a living NPC', () => {
-    expect(isCensored({ status: 'alive', isNpc: true })).toBe(false);
+  it("does not censor a living NPC", () => {
+    expect(isCensored({ status: "alive", isNpc: true })).toBe(false);
   });
 
-  it('does not censor a lost NPC', () => {
-    expect(isCensored({ status: 'lost', isNpc: true })).toBe(false);
+  it("does not censor a lost NPC", () => {
+    expect(isCensored({ status: "lost", isNpc: true })).toBe(false);
   });
 
-  it('does not censor a dead player character', () => {
-    expect(isCensored({ status: 'dead', isNpc: false })).toBe(false);
-  });
-});
-
-describe('censorWidthCh', () => {
-  it('scales with the name length', () => {
-    expect(censorWidthCh('Ethan Cole')).toBe(10);
-  });
-
-  it('clamps very short names up to a readable minimum', () => {
-    expect(censorWidthCh('Al')).toBe(6);
-  });
-
-  it('clamps very long names down to the column width', () => {
-    expect(censorWidthCh('Bartholomew Winterbottom')).toBe(18);
+  it("does not censor a dead player character", () => {
+    expect(isCensored({ status: "dead", isNpc: false })).toBe(false);
   });
 });
 
-describe('roster', () => {
+describe("censorWidthCh", () => {
+  it("scales with the name length", () => {
+    expect(censorWidthCh("Ethan Cole")).toBe(10);
+  });
+
+  it("clamps very short names up to a readable minimum", () => {
+    expect(censorWidthCh("Al")).toBe(6);
+  });
+
+  it("clamps very long names down to the column width", () => {
+    expect(censorWidthCh("Bartholomew Winterbottom")).toBe(18);
+  });
+});
+
+describe("roster", () => {
   const roster = getMockCharacters();
 
-  it('uses only the three current statuses', () => {
+  it("uses only the three current statuses", () => {
     for (const c of roster) {
-      expect(['alive', 'dead', 'lost']).toContain(c.status);
+      expect(["alive", "dead", "lost"]).toContain(c.status);
     }
   });
 
-  it('marks every character with an explicit npc flag', () => {
+  it("marks every character with an explicit npc flag", () => {
     for (const c of roster) {
-      expect(typeof c.isNpc).toBe('boolean');
+      expect(typeof c.isNpc).toBe("boolean");
     }
   });
 
-  it('produces at least one censored entry', () => {
+  it("produces at least one censored entry", () => {
     expect(roster.some(isCensored)).toBe(true);
   });
 });
@@ -575,7 +592,7 @@ In `lib/data.ts`, replace the type and interface near the top:
 
 ```ts
 /** รอด = alive, ตาย = dead, สาบสูญ = lost. */
-export type CharacterStatus = 'alive' | 'dead' | 'lost';
+export type CharacterStatus = "alive" | "dead" | "lost";
 
 export interface Character {
   id: string;
@@ -600,18 +617,18 @@ In `lib/data.ts`, replace `STATUS_SHORT_LABEL` and `STATUS_COLUMNS`:
 ```ts
 /** Short Thai word for each status — used in the scrolling credits roll. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
-  alive: 'รอด',
-  dead: 'ตาย',
-  lost: 'สาบสูญ',
+  alive: "Alive",
+  dead: "Dead",
+  lost: "Lost",
 };
 ```
 
 ```ts
 /** Ordered status columns rendered in the roster section. */
 export const STATUS_COLUMNS: { status: CharacterStatus; label: string }[] = [
-  { status: 'alive', label: 'รายชื่อผู้รอดชีวิต' },
-  { status: 'dead', label: 'รายชื่อผู้เสียชีวิต' },
-  { status: 'lost', label: 'รายชื่อผู้สาบสูญ' },
+  { status: "alive", label: "รายชื่อผู้รอดชีวิต" },
+  { status: "dead", label: "รายชื่อผู้เสียชีวิต" },
+  { status: "lost", label: "รายชื่อผู้สาบสูญ" },
 ];
 ```
 
@@ -621,15 +638,69 @@ In `lib/data.ts`, replace the `FEATURED_CHARACTERS` array. These nine are named 
 
 ```ts
 const FEATURED_CHARACTERS: Character[] = [
-  { id: 'c01', name: 'Ethan Cole', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c02', name: 'Olivia Reed', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c03', name: 'Marcus Bell', role: 'ตัวประกอบฉาก', status: 'alive', isNpc: false },
-  { id: 'c04', name: 'Liam Foster', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c05', name: 'Chloe Grant', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c06', name: 'Noah Blake', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c07', name: 'Ava Sinclair', role: 'ตัวประกอบฉาก', status: 'dead', isNpc: false },
-  { id: 'c08', name: 'Mason Hale', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
-  { id: 'c09', name: 'Isla Monroe', role: 'ตัวประกอบฉาก', status: 'lost', isNpc: false },
+  {
+    id: "c01",
+    name: "Ethan Cole",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: false,
+  },
+  {
+    id: "c02",
+    name: "Olivia Reed",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: false,
+  },
+  {
+    id: "c03",
+    name: "Marcus Bell",
+    role: "ตัวประกอบฉาก",
+    status: "alive",
+    isNpc: false,
+  },
+  {
+    id: "c04",
+    name: "Liam Foster",
+    role: "ตัวประกอบฉาก",
+    status: "dead",
+    isNpc: false,
+  },
+  {
+    id: "c05",
+    name: "Chloe Grant",
+    role: "ตัวประกอบฉาก",
+    status: "dead",
+    isNpc: false,
+  },
+  {
+    id: "c06",
+    name: "Noah Blake",
+    role: "ตัวประกอบฉาก",
+    status: "dead",
+    isNpc: false,
+  },
+  {
+    id: "c07",
+    name: "Ava Sinclair",
+    role: "ตัวประกอบฉาก",
+    status: "dead",
+    isNpc: false,
+  },
+  {
+    id: "c08",
+    name: "Mason Hale",
+    role: "ตัวประกอบฉาก",
+    status: "lost",
+    isNpc: false,
+  },
+  {
+    id: "c09",
+    name: "Isla Monroe",
+    role: "ตัวประกอบฉาก",
+    status: "lost",
+    isNpc: false,
+  },
 ];
 ```
 
@@ -638,19 +709,18 @@ const FEATURED_CHARACTERS: Character[] = [
 In `lib/data.ts`, inside `generateCharacters`, replace the status draw and the pushed object. The seeded `mulberry32` PRNG and the name pools are unchanged, so the roster stays deterministic across builds:
 
 ```ts
-    const r = rand();
-    const status: CharacterStatus =
-      r < 0.42 ? 'alive' : r < 0.8 ? 'dead' : 'lost';
-    // Roughly a quarter of the generated cast are NPCs; the dead ones among
-    // them render as redaction bars.
-    const isNpc = rand() < 0.25;
-    out.push({
-      id: `g${String(++n).padStart(3, '0')}`,
-      name,
-      role: 'ตัวประกอบฉาก',
-      status,
-      isNpc,
-    });
+const r = rand();
+const status: CharacterStatus = r < 0.42 ? "alive" : r < 0.8 ? "dead" : "lost";
+// Roughly a quarter of the generated cast are NPCs; the dead ones among
+// them render as redaction bars.
+const isNpc = rand() < 0.25;
+out.push({
+  id: `g${String(++n).padStart(3, "0")}`,
+  name,
+  role: "ตัวประกอบฉาก",
+  status,
+  isNpc,
+});
 ```
 
 - [ ] **Step 7: Write the censor module**
@@ -662,13 +732,13 @@ Create `lib/censor.ts`:
 // Roster redaction — "Npc - Alive if Dead, will censor".
 // ---------------------------------------------------------------------------
 
-import type { Character } from './data';
+import type { Character } from "./data";
 
 /** A dead NPC's name is redacted; everyone else renders normally. */
 export function isCensored(
-  character: Pick<Character, 'status' | 'isNpc'>,
+  character: Pick<Character, "status" | "isNpc">,
 ): boolean {
-  return character.isNpc && character.status === 'dead';
+  return character.isNpc && character.status === "dead";
 }
 
 /**
@@ -687,9 +757,9 @@ export function censorWidthCh(name: string): number {
 
 ```tsx
 const STATUS_ACCENT: Record<CharacterStatus, string> = {
-  alive: 'text-fate-alive',
-  dead: 'text-fate-dead',
-  lost: 'text-fate-lost',
+  alive: "text-fate-alive",
+  dead: "text-fate-dead",
+  lost: "text-fate-lost",
 };
 ```
 
@@ -725,12 +795,14 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 The visual foundation: the `--decay` token set, the red overlay, VT323 + Prompt, and a stripped `page.tsx` that renders the noise background and nothing else. After this task the page is intentionally near-empty — later tasks fill it in.
 
 **Files:**
+
 - Modify: `app/globals.css` (replace the unused Vite-template rules; keep the credits-roll rules)
 - Modify: `tailwind.config.ts` (color + font tokens)
 - Modify: `app/layout.tsx` (VT323 + Prompt)
 - Modify: `app/page.tsx` (skeleton)
 
 **Interfaces:**
+
 - Produces (CSS custom properties on `:root`): `--decay`, `--c-text`, `--c-text-dim`, `--c-glow`, `--c-censor`, `--c-rule`, `--c-alive`, `--c-dead`, `--c-lost`, `--c-npc`.
 - Produces (Tailwind utilities): `text-scene`, `text-scene-dim`, `text-scene-glow`, `border-scene-rule`, `bg-scene-censor`, `text-fate-alive`, `text-fate-dead`, `text-fate-lost`, `text-fate-npc`, `font-term`, `font-sans`.
 - Produces (CSS classes): `.scene-overlay`, `.frame-dashed`.
@@ -755,11 +827,31 @@ The visual foundation: the `--decay` token set, the red overlay, VT323 + Prompt,
 :root {
   --decay: 0;
 
-  --c-text: color-mix(in oklab, #38cf4e calc((1 - var(--decay)) * 100%), #ffffff);
-  --c-text-dim: color-mix(in oklab, #315933 calc((1 - var(--decay)) * 100%), #b3b3b3);
-  --c-glow: color-mix(in oklab, #20b369 calc((1 - var(--decay)) * 100%), #620202);
-  --c-censor: color-mix(in oklab, #2f5a34 calc((1 - var(--decay)) * 100%), #000000);
-  --c-rule: color-mix(in oklab, #38cf4e calc((1 - var(--decay)) * 100%), #ffffff);
+  --c-text: color-mix(
+    in oklab,
+    #38cf4e calc((1 - var(--decay)) * 100%),
+    #ffffff
+  );
+  --c-text-dim: color-mix(
+    in oklab,
+    #315933 calc((1 - var(--decay)) * 100%),
+    #b3b3b3
+  );
+  --c-glow: color-mix(
+    in oklab,
+    #20b369 calc((1 - var(--decay)) * 100%),
+    #620202
+  );
+  --c-censor: color-mix(
+    in oklab,
+    #2f5a34 calc((1 - var(--decay)) * 100%),
+    #000000
+  );
+  --c-rule: color-mix(
+    in oklab,
+    #38cf4e calc((1 - var(--decay)) * 100%),
+    #ffffff
+  );
 
   /* Roster accents deliberately do NOT interpolate: the roster sits below the
      red gradient's transparent zone and reads the same in both mockups. */
@@ -834,12 +926,12 @@ body {
 Replace `tailwind.config.ts` with:
 
 ```ts
-import type { Config } from 'tailwindcss';
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -848,34 +940,34 @@ const config: Config = {
         // Never use Tailwind opacity modifiers on these — the `/50` syntax
         // does not work with bare var() colour values.
         scene: {
-          DEFAULT: 'var(--c-text)',
-          dim: 'var(--c-text-dim)',
-          glow: 'var(--c-glow)',
-          rule: 'var(--c-rule)',
-          censor: 'var(--c-censor)',
+          DEFAULT: "var(--c-text)",
+          dim: "var(--c-text-dim)",
+          glow: "var(--c-glow)",
+          rule: "var(--c-rule)",
+          censor: "var(--c-censor)",
         },
         fate: {
-          alive: 'var(--c-alive)',
-          dead: 'var(--c-dead)',
-          lost: 'var(--c-lost)',
-          npc: 'var(--c-npc)',
+          alive: "var(--c-alive)",
+          dead: "var(--c-dead)",
+          lost: "var(--c-lost)",
+          npc: "var(--c-npc)",
         },
       },
       fontFamily: {
         // VT323 has no Thai glyphs, so Prompt always follows it in the stack.
-        term: ['var(--font-vt323)', 'var(--font-prompt)', 'monospace'],
-        sans: ['var(--font-prompt)', 'system-ui', 'sans-serif'],
+        term: ["var(--font-vt323)", "var(--font-prompt)", "monospace"],
+        sans: ["var(--font-prompt)", "system-ui", "sans-serif"],
       },
       fontSize: {
         // Fluid equivalents of the fixed sizes on the 1920px Figma canvas.
-        countdown: ['clamp(1.75rem, 7vw, 6rem)', { lineHeight: '1.1' }],
-        window: ['clamp(1.125rem, 3.4vw, 4rem)', { lineHeight: '1.2' }],
-        log: ['clamp(0.75rem, 1.9vw, 2.25rem)', { lineHeight: '1.2' }],
-        panel: ['clamp(0.875rem, 1.6vw, 1.75rem)', { lineHeight: '1.6' }],
-        roster: ['clamp(0.75rem, 1.1vw, 1.25rem)', { lineHeight: '1.7' }],
+        countdown: ["clamp(1.75rem, 7vw, 6rem)", { lineHeight: "1.1" }],
+        window: ["clamp(1.125rem, 3.4vw, 4rem)", { lineHeight: "1.2" }],
+        log: ["clamp(0.75rem, 1.9vw, 2.25rem)", { lineHeight: "1.2" }],
+        panel: ["clamp(0.875rem, 1.6vw, 1.75rem)", { lineHeight: "1.6" }],
+        roster: ["clamp(0.75rem, 1.1vw, 1.25rem)", { lineHeight: "1.7" }],
       },
       letterSpacing: {
-        term: '0.15em',
+        term: "0.15em",
       },
     },
   },
@@ -890,26 +982,26 @@ export default config;
 Replace `app/layout.tsx` with:
 
 ```tsx
-import type { Metadata } from 'next';
-import { Prompt, VT323 } from 'next/font/google';
-import './globals.css';
-import { EVENT_TITLE, EVENT_DESCRIPTION } from '@/lib/data';
+import type { Metadata } from "next";
+import { Prompt, VT323 } from "next/font/google";
+import "./globals.css";
+import { EVENT_TITLE, EVENT_DESCRIPTION } from "@/lib/data";
 
 // Terminal face for Latin text and numerals. Latin-only by design.
 const vt323 = VT323({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-vt323',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-vt323",
+  display: "swap",
 });
 
 // Thai fallback — VT323 has no Thai glyphs, and item names, injuries and the
 // result sentence are all Thai.
 const prompt = Prompt({
-  subsets: ['thai', 'latin'],
-  weight: ['300', '400', '500'],
-  variable: '--font-prompt',
-  display: 'swap',
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500"],
+  variable: "--font-prompt",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -935,11 +1027,11 @@ export default function RootLayout({
 Replace `app/page.tsx` with:
 
 ```tsx
-import { getCharacters } from '@/lib/firebase';
+import { getCharacters } from "@/lib/firebase";
 
 // GitHub Pages project sites serve assets under /<repo>; plain CSS url() and
 // <img> refs don't get that prefix automatically the way next/image does.
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default async function Home() {
   const characters = await getCharacters();
@@ -987,10 +1079,12 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Drives `--decay` from real time.
 
 **Files:**
+
 - Create: `components/DecayClock.tsx`
 - Modify: `app/page.tsx` (mount it)
 
 **Interfaces:**
+
 - Consumes: `computeDecay` from `@/lib/decay`; `EVENT_START`, `EVENT_DEADLINE` from `@/lib/data`.
 - Produces: `<DecayClock start={string} deadline={string} />` — renders `null`, writes `--decay` on `<html>`.
 
@@ -999,10 +1093,10 @@ Drives `--decay` from real time.
 Create `components/DecayClock.tsx`:
 
 ```tsx
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { computeDecay } from '@/lib/decay';
+import { useEffect } from "react";
+import { computeDecay } from "@/lib/decay";
 
 /**
  * Writes the campaign's decay (0…1) onto <html> as --decay, once on mount and
@@ -1024,7 +1118,7 @@ export default function DecayClock({
 
     const apply = () => {
       const decay = computeDecay(Date.now(), startMs, endMs);
-      document.documentElement.style.setProperty('--decay', decay.toFixed(4));
+      document.documentElement.style.setProperty("--decay", decay.toFixed(4));
     };
 
     apply();
@@ -1041,8 +1135,8 @@ export default function DecayClock({
 In `app/page.tsx`, add the imports:
 
 ```tsx
-import DecayClock from '@/components/DecayClock';
-import { EVENT_START, EVENT_DEADLINE } from '@/lib/data';
+import DecayClock from "@/components/DecayClock";
+import { EVENT_START, EVENT_DEADLINE } from "@/lib/data";
 ```
 
 and add the component as the first child of `<main>`, above the overlay:
@@ -1086,12 +1180,14 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 The system log line, emblem, event tag, and event duration.
 
 **Files:**
+
 - Create: `components/SystemLog.tsx`
 - Modify: `components/Emblem.tsx` (point at the murrwood seal)
 - Modify: `lib/data.ts` (`EVENT_WINDOW_LABEL`)
 - Modify: `app/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `BASE_PATH` convention from `Emblem.tsx`.
 - Produces: `<SystemLog />`; `EVENT_WINDOW_LABEL` = `'Event Duration: August 01 - 21, 2026'`.
 
@@ -1101,7 +1197,7 @@ In `lib/data.ts`, replace the `EVENT_WINDOW_LABEL` line. `EVENT_START` and `EVEN
 
 ```ts
 /** Small subtitle under the countdown showing the event window. */
-export const EVENT_WINDOW_LABEL = 'Event Duration: August 01 - 21, 2026';
+export const EVENT_WINDOW_LABEL = "Event Duration: August 01 - 21, 2026";
 ```
 
 - [ ] **Step 2: Write the SystemLog component**
@@ -1114,7 +1210,7 @@ export default function SystemLog() {
   return (
     <div className="w-full">
       <p className="text-log tracking-term text-scene">
-        SYSTEM LOG V.2.0.1 - May 13, 2001
+        SYSTEM LOG V.2.0.1 - May 07, 2001
       </p>
       <hr className="mt-3 h-px border-0 bg-scene-rule" />
     </div>
@@ -1134,9 +1230,9 @@ Replace `components/Emblem.tsx`:
 // app is served from /<repo>, so the src needs the configured base path prefix
 // (empty locally). Images are unoptimized (see next.config.mjs), so a plain
 // <img> is the right tool here rather than next/image.
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export default function Emblem({ className = '' }: { className?: string }) {
+export default function Emblem({ className = "" }: { className?: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -1153,9 +1249,9 @@ export default function Emblem({ className = '' }: { className?: string }) {
 In `app/page.tsx`, add the imports:
 
 ```tsx
-import Emblem from '@/components/Emblem';
-import SystemLog from '@/components/SystemLog';
-import { EVENT_WINDOW_LABEL } from '@/lib/data';
+import Emblem from "@/components/Emblem";
+import SystemLog from "@/components/SystemLog";
+import { EVENT_WINDOW_LABEL } from "@/lib/data";
 ```
 
 and replace the placeholder `<p className="text-log …">Roster: …</p>` with:
@@ -1182,7 +1278,7 @@ Expected: both succeed.
 - [ ] **Step 6: Verify visually**
 
 Run: `npm run dev`.
-Expected: green `SYSTEM LOG V.2.0.1 - May 13, 2001` at top-left above a hairline, the white Murrwood seal centred beneath it, then the dim `#WTM_EVENT_05 : THE FINAL CHAPTER` tag and the dim `Event Duration: August 01 - 21, 2026` line. Narrow the window to 375px and confirm nothing overflows horizontally.
+Expected: green `SYSTEM LOG V.2.0.1 - May 07, 2001` at top-left above a hairline, the white Murrwood seal centred beneath it, then the dim `#WTM_EVENT_05 : THE FINAL CHAPTER` tag and the dim `Event Duration: August 01 - 21, 2026` line. Narrow the window to 375px and confirm nothing overflows horizontally.
 
 - [ ] **Step 7: Commit**
 
@@ -1200,12 +1296,14 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Extracts the countdown math into a testable pure module and restyles the component with the mockup's wording and its blurred glow layer.
 
 **Files:**
+
 - Create: `lib/countdown.ts`
 - Create: `lib/countdown.test.ts`
 - Modify: `components/Countdown.tsx` (replace entirely)
 - Modify: `app/page.tsx` (mount it)
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces:
   - `type CountdownPhase = 'before' | 'active' | 'ended'`
@@ -1219,8 +1317,8 @@ Extracts the countdown math into a testable pure module and restyles the compone
 Create `lib/countdown.test.ts`:
 
 ```ts
-import { describe, expect, it } from 'vitest';
-import { computeCountdown, formatCountdown } from '@/lib/countdown';
+import { describe, expect, it } from "vitest";
+import { computeCountdown, formatCountdown } from "@/lib/countdown";
 
 const START = Date.UTC(2026, 7, 1);
 const END = Date.UTC(2026, 7, 22);
@@ -1228,46 +1326,46 @@ const DAY = 86_400_000;
 const HOUR = 3_600_000;
 const MINUTE = 60_000;
 
-describe('computeCountdown', () => {
-  it('reports the full window before the campaign starts', () => {
+describe("computeCountdown", () => {
+  it("reports the full window before the campaign starts", () => {
     const state = computeCountdown(START - DAY, START, END);
-    expect(state.phase).toBe('before');
+    expect(state.phase).toBe("before");
     expect(state.days).toBe(21);
     expect(state.hours).toBe(0);
     expect(state.minutes).toBe(0);
   });
 
-  it('breaks the remaining time down while active', () => {
+  it("breaks the remaining time down while active", () => {
     const now = END - (2 * DAY + 12 * HOUR + 24 * MINUTE);
     const state = computeCountdown(now, START, END);
-    expect(state.phase).toBe('active');
+    expect(state.phase).toBe("active");
     expect(state.days).toBe(2);
     expect(state.hours).toBe(12);
     expect(state.minutes).toBe(24);
   });
 
-  it('zeroes out at and after the deadline', () => {
+  it("zeroes out at and after the deadline", () => {
     expect(computeCountdown(END, START, END)).toMatchObject({
-      phase: 'ended',
+      phase: "ended",
       days: 0,
       hours: 0,
       minutes: 0,
     });
-    expect(computeCountdown(END + DAY, START, END).phase).toBe('ended');
+    expect(computeCountdown(END + DAY, START, END).phase).toBe("ended");
   });
 });
 
-describe('formatCountdown', () => {
-  it('matches the mockup wording', () => {
+describe("formatCountdown", () => {
+  it("matches the mockup wording", () => {
     const now = END - (2 * DAY + 12 * HOUR + 24 * MINUTE);
     expect(formatCountdown(computeCountdown(now, START, END))).toBe(
-      '2 Days 12 Hours 24 Minute left',
+      "2 Days 12 Hours 24 Minute left",
     );
   });
 
-  it('reads all zeroes once the deadline passes', () => {
+  it("reads all zeroes once the deadline passes", () => {
     expect(formatCountdown(computeCountdown(END, START, END))).toBe(
-      '0 Days 0 Hours 0 Minute left',
+      "0 Days 0 Hours 0 Minute left",
     );
   });
 });
@@ -1290,7 +1388,7 @@ Create `lib/countdown.ts`:
 // frame on the server and only switch to real time after hydration.
 // ---------------------------------------------------------------------------
 
-export type CountdownPhase = 'before' | 'active' | 'ended';
+export type CountdownPhase = "before" | "active" | "ended";
 
 export interface CountdownState {
   phase: CountdownPhase;
@@ -1320,12 +1418,12 @@ export function computeCountdown(
   deadline: number,
 ): CountdownState {
   if (now >= deadline) {
-    return { phase: 'ended', days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return { phase: "ended", days: 0, hours: 0, minutes: 0, seconds: 0 };
   }
   if (now < start) {
-    return breakdown(deadline - start, 'before');
+    return breakdown(deadline - start, "before");
   }
-  return breakdown(deadline - now, 'active');
+  return breakdown(deadline - now, "active");
 }
 
 /** "2 Days 12 Hours 24 Minute left" — the mockup's exact wording. */
@@ -1344,14 +1442,14 @@ Expected: PASS.
 Replace `components/Countdown.tsx` entirely:
 
 ```tsx
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   computeCountdown,
   formatCountdown,
   type CountdownState,
-} from '@/lib/countdown';
+} from "@/lib/countdown";
 
 /**
  * Live countdown in the mockup's two-layer treatment: a blurred glow copy sat
@@ -1405,15 +1503,15 @@ export default function Countdown({
 In `app/page.tsx`, add the import:
 
 ```tsx
-import Countdown from '@/components/Countdown';
+import Countdown from "@/components/Countdown";
 ```
 
 and insert it inside `<header>`, between the `#WTM_EVENT_05` paragraph and the `EVENT_WINDOW_LABEL` paragraph:
 
 ```tsx
-          <h1 className="mt-6">
-            <Countdown start={EVENT_START} deadline={EVENT_DEADLINE} />
-          </h1>
+<h1 className="mt-6">
+  <Countdown start={EVENT_START} deadline={EVENT_DEADLINE} />
+</h1>
 ```
 
 - [ ] **Step 7: Verify types and build**
@@ -1442,10 +1540,12 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 The "What will happened with you?" panel — name input, Enter, result sentence, item image.
 
 **Files:**
+
 - Create: `components/FateBox.tsx`
 - Modify: `app/page.tsx` (mount it)
 
 **Interfaces:**
+
 - Consumes: `rollFate`, `type Fate` from `@/lib/roll`.
 - Produces: `<FateBox />` — self-contained, no props.
 
@@ -1454,10 +1554,10 @@ The "What will happened with you?" panel — name input, Enter, result sentence,
 Create `components/FateBox.tsx`:
 
 ```tsx
-'use client';
+"use client";
 
-import { useState, type FormEvent, type ReactNode } from 'react';
-import { rollFate, type Fate } from '@/lib/roll';
+import { useState, type FormEvent, type ReactNode } from "react";
+import { rollFate, type Fate } from "@/lib/roll";
 
 const MAX_NAME_LENGTH = 40;
 
@@ -1465,9 +1565,9 @@ const MAX_NAME_LENGTH = 40;
 function Slot({ children }: { children: ReactNode }) {
   return (
     <span className="text-scene">
-      {'< '}
+      {"< "}
       {children}
-      {' >'}
+      {" >"}
     </span>
   );
 }
@@ -1477,10 +1577,10 @@ function Slot({ children }: { children: ReactNode }) {
  * different item and injury each time.
  */
 export default function FateBox() {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [fate, setFate] = useState<Fate | null>(null);
-  const [rolledName, setRolledName] = useState('');
-  const [error, setError] = useState('');
+  const [rolledName, setRolledName] = useState("");
+  const [error, setError] = useState("");
   const [imageBroken, setImageBroken] = useState(false);
 
   function handleSubmit(event: FormEvent) {
@@ -1488,12 +1588,12 @@ export default function FateBox() {
 
     const trimmed = name.trim().slice(0, MAX_NAME_LENGTH);
     if (!trimmed) {
-      setError('> ERROR: NAME REQUIRED');
+      setError("> ERROR: NAME REQUIRED");
       setFate(null);
       return;
     }
 
-    setError('');
+    setError("");
     setImageBroken(false);
     setRolledName(trimmed);
     setFate(rollFate());
@@ -1538,13 +1638,15 @@ export default function FateBox() {
         {fate && !error && (
           <>
             <p className="mt-4 text-panel leading-loose text-scene-dim">
-              <Slot>{rolledName}</Slot> ได้รับ <Slot>{fate.item.name}</Slot>{' '}
+              <Slot>{rolledName}</Slot> ได้รับ <Slot>{fate.item.name}</Slot>{" "}
               โดยที่คุณจะมีโอกาส <Slot>{fate.damage}</Slot>
             </p>
 
             <div className="mt-8 text-center">
               {imageBroken ? (
-                <p className="text-panel text-scene-dim">&lt;Image of Item&gt;</p>
+                <p className="text-panel text-scene-dim">
+                  &lt;Image of Item&gt;
+                </p>
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -1577,13 +1679,13 @@ export default function FateBox() {
 In `app/page.tsx`, add the import:
 
 ```tsx
-import FateBox from '@/components/FateBox';
+import FateBox from "@/components/FateBox";
 ```
 
 and add it directly after the closing `</header>` tag:
 
 ```tsx
-        <FateBox />
+<FateBox />
 ```
 
 - [ ] **Step 3: Verify types and build**
@@ -1595,14 +1697,14 @@ Expected: both succeed.
 
 Run: `npm run dev`. Then check each of these:
 
-| Action | Expected |
-| --- | --- |
-| Press Enter with an empty field | `> ERROR: NAME REQUIRED` in red; no result sentence |
-| Type a name, press Enter | Thai sentence `< name > ได้รับ < item > โดยที่คุณจะมีโอกาส < injury >`, an item PNG below it, and the item description |
-| Press Enter repeatedly with the same name | Item and injury change between presses |
-| Click the `Enter` button instead of the key | Same behaviour |
-| Inspect the Thai text | Renders as Thai glyphs, not boxes (Prompt fallback working) |
-| Paste a 100-character name | Truncated to 40 |
+| Action                                      | Expected                                                                                                               |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Press Enter with an empty field             | `> ERROR: NAME REQUIRED` in red; no result sentence                                                                    |
+| Type a name, press Enter                    | Thai sentence `< name > ได้รับ < item > โดยที่คุณจะมีโอกาส < injury >`, an item PNG below it, and the item description |
+| Press Enter repeatedly with the same name   | Item and injury change between presses                                                                                 |
+| Click the `Enter` button instead of the key | Same behaviour                                                                                                         |
+| Inspect the Thai text                       | Renders as Thai glyphs, not boxes (Prompt fallback working)                                                            |
+| Paste a 100-character name                  | Truncated to 40                                                                                                        |
 
 - [ ] **Step 5: Commit**
 
@@ -1620,12 +1722,14 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Restyles the credits roll to the terminal look, splits it into three staggered columns, and renders redaction bars.
 
 **Files:**
+
 - Modify: `components/CreditsRoll.tsx` (replace entirely)
 - Create: `components/StatusLegend.tsx`
 - Create: `components/SurvivalList.tsx`
 - Modify: `app/page.tsx` (mount it)
 
 **Interfaces:**
+
 - Consumes: `Character`, `CharacterStatus`, `STATUS_SHORT_LABEL` from `@/lib/data`; `isCensored`, `censorWidthCh` from `@/lib/censor`.
 - Produces:
   - `<CreditsRoll characters={Character[]} durationSec?={number} className?={string} />`
@@ -1637,18 +1741,18 @@ Restyles the credits roll to the terminal look, splits it into three staggered c
 Replace `components/CreditsRoll.tsx` entirely:
 
 ```tsx
-'use client';
+"use client";
 
-import type { CSSProperties } from 'react';
-import { censorWidthCh, isCensored } from '@/lib/censor';
-import { type Character, type CharacterStatus } from '@/lib/data';
+import type { CSSProperties } from "react";
+import { censorWidthCh, isCensored } from "@/lib/censor";
+import { type Character, type CharacterStatus } from "@/lib/data";
 
 // Fate accents. These do not interpolate with --decay: the roster sits below
 // the red gradient's transparent zone and reads the same in both scenes.
 const STATUS_ACCENT: Record<CharacterStatus, string> = {
-  alive: 'text-fate-alive',
-  dead: 'text-fate-dead',
-  lost: 'text-fate-lost',
+  alive: "text-fate-alive",
+  dead: "text-fate-dead",
+  lost: "text-fate-lost",
 };
 
 function CreditLine({ character }: { character: Character }) {
@@ -1660,19 +1764,17 @@ function CreditLine({ character }: { character: Character }) {
         <span
           aria-label="censored"
           className="inline-block bg-scene-censor align-middle"
-          style={{ width: `${censorWidthCh(character.name)}ch`, height: '1em' }}
+          style={{ width: `${censorWidthCh(character.name)}ch`, height: "1em" }}
         />
       </li>
     );
   }
 
   const accent = character.isNpc
-    ? 'text-fate-npc'
+    ? "text-fate-npc"
     : STATUS_ACCENT[character.status];
 
-  return (
-    <li className={`py-[3px] text-roster ${accent}`}>{character.name}</li>
-  );
+  return <li className={`py-[3px] text-roster ${accent}`}>{character.name}</li>;
 }
 
 function CreditList({
@@ -1685,7 +1787,10 @@ function CreditList({
   ariaHidden?: boolean;
 }) {
   return (
-    <ul aria-hidden={ariaHidden} className={ariaHidden ? 'credits-dup' : undefined}>
+    <ul
+      aria-hidden={ariaHidden}
+      className={ariaHidden ? "credits-dup" : undefined}
+    >
       {characters.map((c) => (
         <CreditLine key={`${keyPrefix}-${c.id}`} character={c} />
       ))}
@@ -1702,7 +1807,7 @@ function CreditList({
 export default function CreditsRoll({
   characters,
   durationSec,
-  className = '',
+  className = "",
 }: {
   characters: Character[];
   durationSec?: number;
@@ -1710,8 +1815,9 @@ export default function CreditsRoll({
 }) {
   // Scale the loop length with the cast so density stays readable; ~0.9s per
   // name, floored so short columns don't whip past.
-  const duration = durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
-  const trackStyle = { '--credits-duration': `${duration}s` } as CSSProperties;
+  const duration =
+    durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
+  const trackStyle = { "--credits-duration": `${duration}s` } as CSSProperties;
 
   return (
     <div
@@ -1755,12 +1861,12 @@ export default function StatusLegend() {
 Create `components/SurvivalList.tsx`. It owns the roster as client state so Task 11's submit bar can prepend into it:
 
 ```tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import CreditsRoll from '@/components/CreditsRoll';
-import StatusLegend from '@/components/StatusLegend';
-import type { Character } from '@/lib/data';
+import { useState } from "react";
+import CreditsRoll from "@/components/CreditsRoll";
+import StatusLegend from "@/components/StatusLegend";
+import type { Character } from "@/lib/data";
 
 /** Split the cast into three roughly equal columns. */
 function intoColumns(characters: Character[]): Character[][] {
@@ -1810,13 +1916,13 @@ export default function SurvivalList({
 In `app/page.tsx`, add the import:
 
 ```tsx
-import SurvivalList from '@/components/SurvivalList';
+import SurvivalList from "@/components/SurvivalList";
 ```
 
 and add it directly after `<FateBox />`:
 
 ```tsx
-        <SurvivalList characters={characters} />
+<SurvivalList characters={characters} />
 ```
 
 - [ ] **Step 5: Verify types and build**
@@ -1828,14 +1934,14 @@ Expected: both succeed.
 
 Run: `npm run dev`. Check:
 
-| Check | Expected |
-| --- | --- |
-| Three columns inside a dashed frame | Yes, on screens ≥ `sm` |
-| Columns scroll at visibly different rates | Yes |
-| Hovering a column pauses just that column | Yes |
-| Green / red / amber / dim names present | Yes |
-| Solid redaction bars scattered through the list, of varying width | Yes |
-| At 375px width | Collapses to a single column, no horizontal overflow |
+| Check                                                                        | Expected                                              |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Three columns inside a dashed frame                                          | Yes, on screens ≥ `sm`                                |
+| Columns scroll at visibly different rates                                    | Yes                                                   |
+| Hovering a column pauses just that column                                    | Yes                                                   |
+| Green / red / amber / dim names present                                      | Yes                                                   |
+| Solid redaction bars scattered through the list, of varying width            | Yes                                                   |
+| At 375px width                                                               | Collapses to a single column, no horizontal overflow  |
 | macOS System Settings → Accessibility → Display → Reduce motion, then reload | Columns stop animating and become manually scrollable |
 
 - [ ] **Step 7: Commit**
@@ -1854,11 +1960,13 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 The inline name + status form, backed by a Firebase-ready no-op.
 
 **Files:**
+
 - Modify: `lib/firebase.ts` (add `submitCharacter`)
 - Create: `components/SubmitBar.tsx`
 - Modify: `components/SurvivalList.tsx` (own the insert, render the bar)
 
 **Interfaces:**
+
 - Consumes: `Character`, `CharacterStatus`, `STATUS_SHORT_LABEL` from `@/lib/data`.
 - Produces:
   - `submitCharacter(entry: { name: string; status: CharacterStatus }): Promise<void>`
@@ -1895,7 +2003,7 @@ import {
   getMockCharacters,
   type Character,
   type CharacterStatus,
-} from './data';
+} from "./data";
 ```
 
 - [ ] **Step 2: Write the SubmitBar**
@@ -1903,15 +2011,19 @@ import {
 Create `components/SubmitBar.tsx`:
 
 ```tsx
-'use client';
+"use client";
 
-import { useState, type FormEvent } from 'react';
-import { STATUS_SHORT_LABEL, type Character, type CharacterStatus } from '@/lib/data';
-import { submitCharacter } from '@/lib/firebase';
+import { useState, type FormEvent } from "react";
+import {
+  STATUS_SHORT_LABEL,
+  type Character,
+  type CharacterStatus,
+} from "@/lib/data";
+import { submitCharacter } from "@/lib/firebase";
 
 const MAX_NAME_LENGTH = 40;
 
-const STATUS_OPTIONS: CharacterStatus[] = ['alive', 'dead', 'lost'];
+const STATUS_OPTIONS: CharacterStatus[] = ["alive", "dead", "lost"];
 
 /**
  * The bottom bar of the survival list. Submitting hands the entry to
@@ -1923,37 +2035,40 @@ export default function SubmitBar({
 }: {
   onSubmitted: (character: Character) => void;
 }) {
-  const [name, setName] = useState('');
-  const [status, setStatus] = useState<CharacterStatus>('alive');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState<CharacterStatus>("alive");
+  const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     const trimmed = name.trim().slice(0, MAX_NAME_LENGTH);
     if (!trimmed) {
-      setError('> ERROR: NAME REQUIRED');
+      setError("> ERROR: NAME REQUIRED");
       return;
     }
 
-    setError('');
+    setError("");
     await submitCharacter({ name: trimmed, status });
 
     onSubmitted({
       id: `submitted-${Date.now()}`,
       name: trimmed,
-      role: 'ตัวประกอบฉาก',
+      role: "ตัวประกอบฉาก",
       status,
       isNpc: false,
     });
-    setName('');
+    setName("");
   }
 
   return (
     <form onSubmit={handleSubmit} className="mt-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-[2fr_1fr]">
         <div className="frame-dashed flex items-center gap-3 px-4 py-3">
-          <label htmlFor="submit-name" className="whitespace-nowrap text-panel text-scene">
+          <label
+            htmlFor="submit-name"
+            className="whitespace-nowrap text-panel text-scene"
+          >
             Add your name here:
           </label>
           <input
@@ -1967,7 +2082,10 @@ export default function SubmitBar({
         </div>
 
         <div className="frame-dashed flex items-center gap-3 px-4 py-3">
-          <label htmlFor="submit-status" className="whitespace-nowrap text-panel text-scene">
+          <label
+            htmlFor="submit-status"
+            className="whitespace-nowrap text-panel text-scene"
+          >
             status :
           </label>
           <select
@@ -1977,7 +2095,11 @@ export default function SubmitBar({
             className="min-w-0 flex-1 cursor-pointer appearance-none bg-transparent text-panel text-scene outline-none"
           >
             {STATUS_OPTIONS.map((option) => (
-              <option key={option} value={option} className="bg-black text-white">
+              <option
+                key={option}
+                value={option}
+                className="bg-black text-white"
+              >
                 {STATUS_SHORT_LABEL[option]}
               </option>
             ))}
@@ -2010,21 +2132,21 @@ export default function SubmitBar({
 In `components/SurvivalList.tsx`, add the import:
 
 ```tsx
-import SubmitBar from '@/components/SubmitBar';
+import SubmitBar from "@/components/SubmitBar";
 ```
 
 change the state hook to expose its setter:
 
 ```tsx
-  const [roster, setRoster] = useState<Character[]>(characters);
+const [roster, setRoster] = useState<Character[]>(characters);
 ```
 
 and render the bar immediately after the closing `</div>` of the columns grid, still inside `<section>`:
 
 ```tsx
-      <SubmitBar
-        onSubmitted={(character) => setRoster((prev) => [character, ...prev])}
-      />
+<SubmitBar
+  onSubmitted={(character) => setRoster((prev) => [character, ...prev])}
+/>
 ```
 
 - [ ] **Step 4: Verify types and build**
@@ -2036,13 +2158,13 @@ Expected: both succeed.
 
 Run: `npm run dev`. Check:
 
-| Action | Expected |
-| --- | --- |
-| Submit with an empty name | `> ERROR: NAME REQUIRED`; nothing added |
-| Type a name, pick `ตาย`, submit | The name appears at the top of the first column in red, input clears |
-| Submit a second name | Appears above the first |
-| Reload the page | Submitted names are gone (session-only, as designed) |
-| Tab to the select and use arrow keys | Works; options are legible against their background |
+| Action                               | Expected                                                             |
+| ------------------------------------ | -------------------------------------------------------------------- |
+| Submit with an empty name            | `> ERROR: NAME REQUIRED`; nothing added                              |
+| Type a name, pick `ตาย`, submit      | The name appears at the top of the first column in red, input clears |
+| Submit a second name                 | Appears above the first                                              |
+| Reload the page                      | Submitted names are gone (session-only, as designed)                 |
+| Tab to the select and use arrow keys | Works; options are legible against their background                  |
 
 - [ ] **Step 6: Commit**
 
@@ -2060,6 +2182,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Adds the footer rule, confirms the whole page against both mockups at both ends of the decay range, and updates the README.
 
 **Files:**
+
 - Modify: `app/page.tsx` (footer rule, spacing)
 - Modify: `README.md` (structure table)
 
@@ -2098,7 +2221,7 @@ Confirm: `ls out/index.html`
 
 Run: `npm run dev` with `--decay` at its default 0. Compare top to bottom against the green mockup:
 
-- [ ] `SYSTEM LOG V.2.0.1 - May 13, 2001` top-left, above a hairline
+- [ ] `SYSTEM LOG V.2.0.1 - May 07, 2001` top-left, above a hairline
 - [ ] Murrwood seal centred
 - [ ] `#WTM_EVENT_05 : THE FINAL CHAPTER` dim green
 - [ ] Large glowing green countdown
@@ -2130,22 +2253,22 @@ At 375px, 768px, and 1440px widths confirm: no horizontal scrollbar on `<body>`,
 In `README.md`, replace the `## Structure` table rows with:
 
 ```markdown
-| Path | What |
-| --- | --- |
-| `app/page.tsx` | The page: header chrome, fate panel, survival list |
-| `app/layout.tsx` | Root layout, VT323 + Prompt fonts, metadata |
-| `app/globals.css` | Scene tokens (`--decay` colour interpolation), credits-roll rules |
-| `components/DecayClock.tsx` | Writes `--decay` on `<html>` from the campaign clock |
-| `components/Countdown.tsx` | Live countdown with the mockup's glow treatment |
-| `components/FateBox.tsx` | Name input → random item + injury |
-| `components/SurvivalList.tsx` | Roster columns, legend, submit bar |
-| `components/CreditsRoll.tsx` | One scrolling roster column |
-| `lib/decay.ts` | Campaign decay math (0 = green, 1 = red) |
-| `lib/countdown.ts` | Countdown math and formatting |
-| `lib/items.ts`, `lib/damage.ts`, `lib/roll.ts` | Item / injury pools and the draw |
-| `lib/censor.ts` | "Npc - Alive if Dead, will censor" rule |
-| `lib/data.ts` | Types, seeded roster, event constants |
-| `lib/firebase.ts` | Data access layer (swap mock → Firebase here) |
+| Path                                           | What                                                              |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| `app/page.tsx`                                 | The page: header chrome, fate panel, survival list                |
+| `app/layout.tsx`                               | Root layout, VT323 + Prompt fonts, metadata                       |
+| `app/globals.css`                              | Scene tokens (`--decay` colour interpolation), credits-roll rules |
+| `components/DecayClock.tsx`                    | Writes `--decay` on `<html>` from the campaign clock              |
+| `components/Countdown.tsx`                     | Live countdown with the mockup's glow treatment                   |
+| `components/FateBox.tsx`                       | Name input → random item + injury                                 |
+| `components/SurvivalList.tsx`                  | Roster columns, legend, submit bar                                |
+| `components/CreditsRoll.tsx`                   | One scrolling roster column                                       |
+| `lib/decay.ts`                                 | Campaign decay math (0 = green, 1 = red)                          |
+| `lib/countdown.ts`                             | Countdown math and formatting                                     |
+| `lib/items.ts`, `lib/damage.ts`, `lib/roll.ts` | Item / injury pools and the draw                                  |
+| `lib/censor.ts`                                | "Npc - Alive if Dead, will censor" rule                           |
+| `lib/data.ts`                                  | Types, seeded roster, event constants                             |
+| `lib/firebase.ts`                              | Data access layer (swap mock → Firebase here)                     |
 ```
 
 and under the "Local development" section, after the `npm run dev` block, add the sentence `Run the unit tests:` followed by a `bash` code block containing `npm test`.
