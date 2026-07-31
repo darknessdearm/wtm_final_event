@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   CHARACTERS_PATH,
   DEFAULT_ROLE,
@@ -18,6 +18,65 @@ describe('paths', () => {
     // The other app owns the top-level /characters and /itemPool nodes.
     expect(CHARACTERS_PATH).toBe('final_event/characters');
     expect(ITEMS_PATH).toBe('final_event/items');
+  });
+});
+
+describe('isFirebaseConfigured', () => {
+  // A deploy whose CI variables are missing or misnamed fails silently — the
+  // site just stops updating. These pin the switch that decides which way it
+  // goes, and the suite below proves the "off" side still works.
+  beforeEach(() => vi.resetModules());
+  afterEach(() => vi.unstubAllEnvs());
+
+  it('is false when the config is absent or blank', async () => {
+    vi.stubEnv('NEXT_PUBLIC_FIREBASE_API_KEY', '');
+    vi.stubEnv('NEXT_PUBLIC_FIREBASE_DATABASE_URL', '');
+    const { isFirebaseConfigured } = await import('@/lib/firebase');
+    expect(isFirebaseConfigured()).toBe(false);
+  });
+
+  it('needs the database URL, not just the key', async () => {
+    vi.stubEnv('NEXT_PUBLIC_FIREBASE_API_KEY', 'test-key');
+    vi.stubEnv('NEXT_PUBLIC_FIREBASE_DATABASE_URL', '');
+    const { isFirebaseConfigured } = await import('@/lib/firebase');
+    expect(isFirebaseConfigured()).toBe(false);
+  });
+
+  it('is true once both are present', async () => {
+    vi.stubEnv('NEXT_PUBLIC_FIREBASE_API_KEY', 'test-key');
+    vi.stubEnv(
+      'NEXT_PUBLIC_FIREBASE_DATABASE_URL',
+      'https://example-default-rtdb.firebasedatabase.app',
+    );
+    const { isFirebaseConfigured } = await import('@/lib/firebase');
+    expect(isFirebaseConfigured()).toBe(true);
+  });
+});
+
+describe('the client layer with no configuration', () => {
+  // vitest runs without .env, so this is the unconfigured build: a fork, a
+  // preview, or a deploy whose repository variables were never set.
+  it('stays inert instead of throwing, so the page can never blank', async () => {
+    const { subscribeToCharacters, subscribeToItems, submitCharacter, isLive } =
+      await import('@/lib/firebaseClient');
+
+    expect(isLive()).toBe(false);
+
+    const delivered: unknown[] = [];
+    const unsubCharacters = subscribeToCharacters((c) => delivered.push(c));
+    const unsubItems = subscribeToItems((i) => delivered.push(i));
+
+    // Never delivers, so callers keep the roster and item pool they shipped
+    // with rather than being handed an empty list.
+    expect(delivered).toEqual([]);
+    expect(() => unsubCharacters()).not.toThrow();
+    expect(() => unsubItems()).not.toThrow();
+
+    // The submit form still "works" — it resolves without writing, and
+    // SubmitBar shows the name locally.
+    await expect(
+      submitCharacter({ name: 'Someone', status: 'lost' }),
+    ).resolves.toBeUndefined();
   });
 });
 
