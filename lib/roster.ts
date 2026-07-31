@@ -10,6 +10,23 @@ import type { Character } from './data';
 import { sameName } from './validateName';
 
 /**
+ * Split the cast into `count` roughly equal columns, preserving order.
+ *
+ * Every character lands in exactly one column: the last one absorbs the
+ * remainder, so it is the short one rather than a fourth column appearing.
+ */
+export function intoColumns(
+  characters: Character[],
+  count: number,
+): Character[][] {
+  if (count < 1) return [characters];
+  const size = Math.ceil(characters.length / count);
+  return Array.from({ length: count }, (_, i) =>
+    characters.slice(i * size, (i + 1) * size),
+  );
+}
+
+/**
  * Apply a submission to a roster held in memory.
  *
  * A name already on the roster has its status replaced in place, keeping its
