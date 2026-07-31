@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { findPlayerKey } from '@/lib/firebase';
-import { upsertByName } from '@/lib/roster';
+import { intoColumns, upsertByName } from '@/lib/roster';
 import { sameName } from '@/lib/validateName';
 import { NPC_ROLE, PLAYER_ROLE, type Character } from '@/lib/data';
 
@@ -56,6 +56,43 @@ describe('findPlayerKey', () => {
     expect(findPlayerKey({}, 'John Smith')).toBeNull();
     expect(findPlayerKey({ x: null }, 'John Smith')).toBeNull();
     expect(findPlayerKey({ x: { name: 42 } }, 'John Smith')).toBeNull();
+  });
+});
+
+describe('intoColumns', () => {
+  // The column count changes with the viewport (3 desktop / 2 tablet / 1
+  // mobile), so the split has to hold for every count — losing or repeating a
+  // name at one breakpoint would be easy to miss on a scrolling list.
+  const cast = Array.from({ length: 115 }, (_, i) => ({
+    id: `c${i}`,
+    name: `Name ${i}`,
+    role: NPC_ROLE,
+    status: 'alive' as const,
+    isNpc: true,
+  }));
+
+  for (const count of [1, 2, 3]) {
+    it(`keeps every character exactly once across ${count} column(s)`, () => {
+      const columns = intoColumns(cast, count);
+      expect(columns).toHaveLength(count);
+
+      const flat = columns.flat();
+      expect(flat).toHaveLength(cast.length);
+      // Order preserved, nothing dropped, nothing duplicated.
+      expect(flat.map((c) => c.id)).toEqual(cast.map((c) => c.id));
+    });
+  }
+
+  it('balances columns, leaving only the last one short', () => {
+    const [a, b, c] = intoColumns(cast, 3);
+    expect(a).toHaveLength(39);
+    expect(b).toHaveLength(39);
+    expect(c).toHaveLength(37);
+  });
+
+  it('handles an empty roster and a nonsensical count', () => {
+    expect(intoColumns([], 3).every((c) => c.length === 0)).toBe(true);
+    expect(intoColumns(cast, 0)).toEqual([cast]);
   });
 });
 
