@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CreditsRoll from "@/components/CreditsRoll";
 import StatusLegend from "@/components/StatusLegend";
 import SubmitBar from "@/components/SubmitBar";
@@ -27,6 +27,11 @@ export default function SurvivalList({
 }) {
   const [roster, setRoster] = useState<Character[]>(characters);
 
+  // Whether snapshots are actually arriving — which is not the same as whether
+  // Firebase is configured. If reads are denied the subscription stays silent,
+  // and submissions still need the local insert in onSubmitted below.
+  const isLive = useRef(false);
+
   // `characters` is the build-time roster baked into the static export, so the
   // columns are full on first paint. Once the live subscription delivers a
   // snapshot it takes over and every later change — including other people's
@@ -36,7 +41,9 @@ export default function SurvivalList({
   // blanking the credits roll, so a permissions change can't empty the page.
   useEffect(() => {
     return subscribeToCharacters((next) => {
-      if (next.length > 0) setRoster(next);
+      if (next.length === 0) return;
+      isLive.current = true;
+      setRoster(next);
     });
   }, []);
 
@@ -63,7 +70,15 @@ export default function SurvivalList({
       </div>
 
       <SubmitBar
-        onSubmitted={(character) => setRoster((prev) => [character, ...prev])}
+        onSubmitted={(character) => {
+          // Firebase applies a write to its local cache *before* push()
+          // resolves, so the subscription has already delivered this entry by
+          // the time SubmitBar calls back — inserting it again would show the
+          // name twice, and it would stay doubled until the next snapshot.
+          // Only the offline path still needs the local insert.
+          if (isLive.current) return;
+          setRoster((prev) => [character, ...prev]);
+        }}
       />
     </section>
   );
