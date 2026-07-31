@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { findPlayerKey } from '@/lib/firebase';
 import { upsertByName } from '@/lib/roster';
 import { sameName } from '@/lib/validateName';
-import type { Character } from '@/lib/data';
+import { DEFAULT_ROLE, type Character } from '@/lib/data';
 
 // Re-submitting a name changes that player's status instead of adding a second
 // line for them. findPlayerKey drives the live path (lib/firebaseClient.ts) and
@@ -63,14 +63,14 @@ describe('upsertByName', () => {
   const npc: Character = {
     id: 'c000',
     name: 'Elias Reed',
-    role: 'ตัวประกอบฉาก',
+    role: DEFAULT_ROLE,
     status: 'alive',
     isNpc: true,
   };
   const player: Character = {
     id: '-Oy1',
     name: 'John Smith',
-    role: 'ตัวประกอบฉาก',
+    role: DEFAULT_ROLE,
     status: 'alive',
     isNpc: false,
   };
@@ -79,7 +79,7 @@ describe('upsertByName', () => {
   const submission = (name: string, status: Character['status']): Character => ({
     id: `submitted-${name}`,
     name,
-    role: 'ตัวประกอบฉาก',
+    role: DEFAULT_ROLE,
     status,
     isNpc: false,
   });

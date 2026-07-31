@@ -27,6 +27,7 @@
 // ---------------------------------------------------------------------------
 
 import {
+  DEFAULT_ROLE,
   getMockCharacters,
   type Character,
   type CharacterStatus,
@@ -57,8 +58,11 @@ export function isFirebaseConfigured(): boolean {
   return Boolean(firebaseConfig.apiKey && firebaseConfig.databaseURL);
 }
 
-/** Role given to entries that don't carry one — every seeded character has it. */
-export const DEFAULT_ROLE = 'ตัวประกอบฉาก';
+/**
+ * Re-exported so the write path and the mappers below share one definition with
+ * the seed roster. Changing the wording is a one-line edit in lib/data.ts.
+ */
+export { DEFAULT_ROLE };
 
 const VALID_STATUSES: CharacterStatus[] = ['alive', 'dead', 'lost'];
 

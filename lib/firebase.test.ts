@@ -83,7 +83,7 @@ describe('the client layer with no configuration', () => {
 describe('toCharacter', () => {
   const valid = {
     name: 'Erin Giver',
-    role: 'ตัวประกอบฉาก',
+    role: DEFAULT_ROLE,
     status: 'dead',
     isNpc: true,
   };
@@ -92,7 +92,7 @@ describe('toCharacter', () => {
     expect(toCharacter('c007', valid)).toEqual({
       id: 'c007',
       name: 'Erin Giver',
-      role: 'ตัวประกอบฉาก',
+      role: DEFAULT_ROLE,
       status: 'dead',
       isNpc: true,
     });

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import {
+  DEFAULT_ROLE,
   STATUS_SHORT_LABEL,
   type Character,
   type CharacterStatus,
@@ -67,7 +68,7 @@ export default function SubmitBar({
     onSubmitted({
       id: `submitted-${Date.now()}`,
       name: resolved,
-      role: "ตัวประกอบฉาก",
+      role: DEFAULT_ROLE,
       status,
       isNpc: false,
     });

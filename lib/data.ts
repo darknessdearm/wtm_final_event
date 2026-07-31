@@ -22,7 +22,7 @@ export interface Character {
   id: string;
   /** ชื่อตัวละคร */
   name: string;
-  /** บทบาท เช่น ตัวประกอบฉาก */
+  /** บทบาท — see DEFAULT_ROLE. */
   role: string;
   status: CharacterStatus;
   /**
@@ -62,6 +62,19 @@ export const EVENT_DESCRIPTION = "สุ่มสถานการณ์ปร�
 /** Small subtitle under the countdown showing the event window. */
 export const EVENT_WINDOW_LABEL = "Event Duration: August 01 - 21, 2026";
 
+/**
+ * บทบาท carried by every roster entry, seeded and submitted alike.
+ *
+ * Defined once here and imported everywhere — lib/firebase.ts re-exports it for
+ * the write path — so changing the wording is a one-line edit rather than a
+ * hunt through literals that drift apart. Never rendered: the credits roll
+ * shows names only, so this is stored data.
+ *
+ * Changing it does NOT rewrite rows already in the database; re-seed with
+ * `npm run seed -- --force` to bring the stored roster in line.
+ */
+export const DEFAULT_ROLE = "ผู้เล่น";
+
 /** Short Thai word for each status — used for the status <option> labels in SubmitBar. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
   alive: "Alive",
@@ -78,28 +91,28 @@ const FEATURED_CHARACTERS: Character[] = [
   {
     id: "c01",
     name: "Jeffrey McPine",
-    role: "ตัวประกอบฉาก",
+    role: DEFAULT_ROLE,
     status: "dead",
     isNpc: true,
   },
   {
     id: "c02",
     name: "Charlie Kiddington",
-    role: "ตัวประกอบฉาก",
+    role: DEFAULT_ROLE,
     status: "alive",
     isNpc: true,
   },
   {
     id: "c03",
     name: "Felico Wise",
-    role: "ตัวประกอบฉาก",
+    role: DEFAULT_ROLE,
     status: "alive",
     isNpc: true,
   },
   {
     id: "c04",
     name: "RedWood [sk'aWk'os]",
-    role: "ตัวประกอบฉาก",
+    role: DEFAULT_ROLE,
     status: "alive",
     isNpc: true,
   },
@@ -260,7 +273,7 @@ function generateCharacters(
     out.push({
       id: `g${String(++n).padStart(3, "0")}`,
       name,
-      role: "ตัวประกอบฉาก",
+      role: DEFAULT_ROLE,
       status,
       isNpc: true,
     });
