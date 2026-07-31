@@ -17,3 +17,14 @@ export function resolveName(raw: string): string | null {
   const trimmed = raw.trim().slice(0, MAX_NAME_LENGTH);
   return trimmed ? trimmed : null;
 }
+
+/**
+ * Whether two names refer to the same person for the purposes of re-submitting.
+ *
+ * Compared trimmed and case-insensitively, so "  john smith " updates the entry
+ * stored as "John Smith" rather than sitting beside it as a near-duplicate. The
+ * stored spelling is never overwritten — the first submission's casing wins.
+ */
+export function sameName(a: string, b: string): boolean {
+  return a.trim().toLocaleLowerCase() === b.trim().toLocaleLowerCase();
+}

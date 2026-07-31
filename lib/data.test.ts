@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { isCensored } from '@/lib/censor';
-import { getMockCharacters, STATUS_SHORT_LABEL } from '@/lib/data';
+import {
+  getMockCharacters,
+  roleFor,
+  NPC_ROLE,
+  PLAYER_ROLE,
+  STATUS_SHORT_LABEL,
+} from '@/lib/data';
 
 // Two ways into the roster, with different rules:
 //   seeded  -> NPC, alive or dead only, dead ones censored
@@ -35,6 +41,13 @@ describe('the seeded roster', () => {
     expect(ratio).toBeLessThan(0.6);
   });
 
+  it('carries the cast role, never the player one', () => {
+    // role follows the same split as isNpc: the seeded cast are extras, and
+    // only submissions through the form are players.
+    expect(roster.every((c) => c.role === NPC_ROLE)).toBe(true);
+    expect(roster.some((c) => c.role === PLAYER_ROLE)).toBe(false);
+  });
+
   it('has unique names and stable ids', () => {
     expect(new Set(roster.map((c) => c.name)).size).toBe(roster.length);
     expect(new Set(roster.map((c) => c.id)).size).toBe(roster.length);
@@ -42,6 +55,17 @@ describe('the seeded roster', () => {
 
   it('is deterministic across calls, so the static export matches the seed', () => {
     expect(getMockCharacters()).toEqual(roster);
+  });
+});
+
+describe('roleFor', () => {
+  it('maps the two sides of the roster to their roles', () => {
+    expect(roleFor(true)).toBe(NPC_ROLE);
+    expect(roleFor(false)).toBe(PLAYER_ROLE);
+  });
+
+  it('keeps the two roles distinct', () => {
+    expect(NPC_ROLE).not.toBe(PLAYER_ROLE);
   });
 });
 
