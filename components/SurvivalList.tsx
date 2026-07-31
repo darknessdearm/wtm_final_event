@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreditsRoll from "@/components/CreditsRoll";
 import StatusLegend from "@/components/StatusLegend";
 import SubmitBar from "@/components/SubmitBar";
 import type { Character } from "@/lib/data";
+import { subscribeToCharacters } from "@/lib/firebaseClient";
 
 /** Split the cast into three roughly equal columns. */
 function intoColumns(characters: Character[]): Character[][] {
@@ -25,6 +26,20 @@ export default function SurvivalList({
   characters: Character[];
 }) {
   const [roster, setRoster] = useState<Character[]>(characters);
+
+  // `characters` is the build-time roster baked into the static export, so the
+  // columns are full on first paint. Once the live subscription delivers a
+  // snapshot it takes over and every later change — including other people's
+  // submissions — arrives without a reload.
+  //
+  // An empty or unreadable node leaves the bundled roster in place rather than
+  // blanking the credits roll, so a permissions change can't empty the page.
+  useEffect(() => {
+    return subscribeToCharacters((next) => {
+      if (next.length > 0) setRoster(next);
+    });
+  }, []);
+
   const columns = intoColumns(roster);
 
   return (

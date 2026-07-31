@@ -1,0 +1,61 @@
+{
+  "_comment_1": "RECOMMENDED Realtime Database rules — NOT yet deployed. See the Security section of README.md.",
+  "_comment_2": "The database is currently world-readable AND world-writable, so anyone can delete every node in it. These rules close that while keeping the site working.",
+  "_comment_3": "Deploy with: firebase deploy --only database  (or paste into Console > Realtime Database > Rules).",
+  "_comment_4": "Seed final_event/ BEFORE deploying these — they intentionally forbid the bulk writes that scripts/seed-final-event.mjs makes.",
+
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "_comment_other_app": "Owned by the other app, left exactly as open as it is today so nothing breaks. Tighten these once that app can authenticate.",
+    "characters": {
+      ".read": true,
+      ".write": true
+    },
+    "itemPool": {
+      ".read": true,
+      ".write": true
+    },
+
+    "final_event": {
+      "_comment": "This site's subtree.",
+
+      "items": {
+        "_comment": "Public read; edit item text from the Firebase console only.",
+        ".read": true,
+        ".write": false
+      },
+
+      "characters": {
+        ".read": true,
+
+        "$entry": {
+          "_comment": "Create-only: a submitted name can never be edited or deleted by a visitor, so the roster cannot be vandalised or wiped from the client.",
+          ".write": "!data.exists() && newData.exists()",
+          ".validate": "newData.hasChildren(['name', 'status'])",
+
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 40"
+          },
+          "role": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          },
+          "status": {
+            ".validate": "newData.val() === 'alive' || newData.val() === 'dead' || newData.val() === 'lost'"
+          },
+          "isNpc": {
+            "_comment": "Public submissions are never NPCs, so they can never be censored.",
+            ".validate": "newData.isBoolean() && newData.val() === false"
+          },
+          "createdAt": {
+            ".validate": "newData.val() === now"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    }
+  }
+}

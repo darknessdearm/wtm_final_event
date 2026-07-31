@@ -1,13 +1,21 @@
 // ---------------------------------------------------------------------------
-// Domain types + mock data.
+// Domain types + the seed roster.
 //
-// Everything here is placeholder content that mirrors the shape we expect from
-// Firebase Realtime Database. When the DB is wired up (see lib/firebase.ts) the
-// only thing that changes is *where* `getCharacters()` reads from — the rest of
-// the UI keeps consuming the same `Character` shape.
+// This roster is no longer a placeholder: scripts/seed-final-event.mjs wrote it
+// verbatim to `final_event/characters`, so the database holds exactly these
+// entries in exactly this order. It stays in the bundle for two reasons —
+// it renders the static export (which cannot read the database at build time),
+// and it is the fallback whenever live data is unavailable.
+//
+// Regenerating it here therefore drifts from the database until the seed script
+// is re-run with --force. See lib/firebase.ts.
 // ---------------------------------------------------------------------------
 
-/** รอด = alive, ตาย = dead, สาบสูญ = lost. */
+/**
+ * รอด = alive, ตาย = dead, สาบสูญ = lost.
+ *
+ * Players use all three; seeded NPCs only ever carry alive or dead.
+ */
 export type CharacterStatus = "alive" | "dead" | "lost";
 
 export interface Character {
@@ -21,6 +29,9 @@ export interface Character {
    * NPCs are dimmed in the roster, and a *dead* NPC has their name redacted
    * entirely — "Npc - Alive if Dead, will censor" in the legend. NPC-ness is
    * independent of aliveness, so it is a flag rather than a fourth status.
+   *
+   * This is also what separates the two ways into the roster: every seeded
+   * character is an NPC, and everyone who submits the form is a player.
    */
   isNpc: boolean;
 }
@@ -45,36 +56,39 @@ export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
   lost: "Missing",
 };
 
-// The nine hand-authored characters. These stay in the roster verbatim; the
+// The four hand-authored characters. These stay in the roster verbatim; the
 // rest of the credits list is generated from the name pools below.
+//
+// Like every seeded entry they are NPCs, so Jeffrey McPine — the one dead
+// name here — renders as a redaction bar rather than as text.
 const FEATURED_CHARACTERS: Character[] = [
   {
     id: "c01",
     name: "Jeffrey McPine",
     role: "ตัวประกอบฉาก",
     status: "dead",
-    isNpc: false,
+    isNpc: true,
   },
   {
     id: "c02",
     name: "Charlie Kiddington",
     role: "ตัวประกอบฉาก",
     status: "alive",
-    isNpc: false,
+    isNpc: true,
   },
   {
     id: "c03",
     name: "Felico Wise",
     role: "ตัวประกอบฉาก",
     status: "alive",
-    isNpc: false,
+    isNpc: true,
   },
   {
     id: "c04",
     name: "RedWood [sk'aWk'os]",
     role: "ตัวประกอบฉาก",
     status: "alive",
-    isNpc: false,
+    isNpc: true,
   },
 ];
 
@@ -196,9 +210,22 @@ function shuffle<T>(items: T[], rand: () => number): T[] {
 }
 
 /**
+ * Share of seeded NPCs that are dead, and therefore censored in the roll.
+ *
+ * Seeded NPCs carry only alive/dead, so the roster's original alive:dead
+ * balance of 42:38 becomes 38/(42+38) here — the same proportion with `lost`
+ * folded away. Because every seeded entry is an NPC, this doubles as the share
+ * of the credits roll that renders as redaction bars; lower it to show more
+ * names.
+ */
+const NPC_DEAD_RATE = 0.475;
+
+/**
  * Build `count` unique extra characters by mixing the first/last name pools.
- * Statuses are weighted ~ alive / dead / lost so the roll feels like the
- * aftermath of a survival scenario rather than an even split.
+ *
+ * Every generated entry is an NPC with a status of alive or dead — `lost`
+ * (Missing) is reserved for players, who only enter the roster by submitting
+ * the form. See the legend in components/StatusLegend.tsx.
  */
 function generateCharacters(
   count: number,
@@ -217,26 +244,21 @@ function generateCharacters(
     if (seen.has(name)) continue;
     seen.add(name);
 
-    const r = rand();
-    const status: CharacterStatus =
-      r < 0.42 ? "alive" : r < 0.8 ? "dead" : "lost";
-    // Roughly a quarter of the generated cast are NPCs; the dead ones among
-    // them render as redaction bars.
-    const isNpc = rand() < 0.25;
+    const status: CharacterStatus = rand() < NPC_DEAD_RATE ? "dead" : "alive";
     out.push({
       id: `g${String(++n).padStart(3, "0")}`,
       name,
       role: "ตัวประกอบฉาก",
       status,
-      isNpc,
+      isNpc: true,
     });
   }
   return out;
 }
 
-// The full roster: the nine featured characters plus 111 generated ones (120
-// total, > 100 as required), all shuffled together so alive / dead / lost
-// are interleaved for the end-credits roll.
+// The full roster: the four featured characters plus 111 generated ones (115
+// total, > 100 as required), all shuffled together so alive and dead names are
+// interleaved for the end-credits roll.
 const ROSTER: Character[] = shuffle(
   [
     ...FEATURED_CHARACTERS,
