@@ -1,6 +1,11 @@
 import { getCharacters } from "@/lib/firebase";
 import DecayClock from "@/components/DecayClock";
-import { EVENT_START, EVENT_DEADLINE, EVENT_WINDOW_LABEL } from "@/lib/data";
+import {
+  EVENT_START,
+  EVENT_DEADLINE,
+  EVENT_WINDOW_LABEL,
+  COUNTDOWN_DISPLAY_DAYS,
+} from "@/lib/data";
 import Emblem from "@/components/Emblem";
 import SystemLog from "@/components/SystemLog";
 import Countdown from "@/components/Countdown";
@@ -49,7 +54,11 @@ export default async function Home() {
           </p>
 
           <h1 className="mt-6">
-            <Countdown start={EVENT_START} deadline={EVENT_DEADLINE} />
+            <Countdown
+              start={EVENT_START}
+              deadline={EVENT_DEADLINE}
+              displayDays={COUNTDOWN_DISPLAY_DAYS}
+            />
           </h1>
 
           <p className="mt-6 text-window text-scene-dim">

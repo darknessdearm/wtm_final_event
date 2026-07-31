@@ -44,6 +44,19 @@ export interface Character {
 export const EVENT_START = "2026-08-01T00:00:00+07:00";
 export const EVENT_DEADLINE = "2026-08-22T00:00:00+07:00";
 
+/**
+ * How much time the countdown *displays* across the whole campaign.
+ *
+ * The event really runs 21 days, but the banner counts down from 3 — so the
+ * timer advances at 3/21 of a wall clock, roughly seven times slower, and still
+ * reaches zero exactly at EVENT_DEADLINE. Purely presentational: EVENT_START
+ * and EVENT_DEADLINE are unchanged, and the decay scene still tracks real
+ * progress through the campaign (see lib/decay.ts).
+ *
+ * Set to null to run the countdown in real time.
+ */
+export const COUNTDOWN_DISPLAY_DAYS: number | null = 3;
+
 export const EVENT_TITLE = "WTM Final Event";
 export const EVENT_DESCRIPTION = "สุ่มสถานการณ์ประจำสัปดาห์ · Week 3";
 /** Small subtitle under the countdown showing the event window. */
