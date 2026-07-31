@@ -64,7 +64,7 @@ The key tells you which is which, and they follow different rules:
 | Written by | `npm run seed` | the site's submit form |
 | `isNpc` | `true` | `false` |
 | Statuses | `alive`, `dead` | `alive`, `dead`, `lost` (Missing) |
-| When dead | name is redacted | name still shown |
+| When dead | name struck through | name shown plainly |
 
 `lost` is player-only — an NPC is either alive or censored. The invariants are
 pinned by [`lib/data.test.ts`](lib/data.test.ts) on the seed side and by
@@ -76,7 +76,7 @@ reproduces the roster's shuffle. Push IDs begin with `-`, which sorts ahead of
 
 Because every seeded entry is an NPC, `NPC_DEAD_RATE` in
 [`lib/data.ts`](lib/data.ts) doubles as the share of the credits roll that
-renders as redaction bars — currently ~52%. Lower it to show more names.
+renders struck through — currently ~52%.
 
 ### Setup
 
@@ -121,13 +121,6 @@ entries can't be edited or deleted from a browser), shape and length
 validation, and `isNpc` pinned to `false` for public submissions — the form can
 only ever create players, never NPCs. The other app's nodes are left as open as
 they are today so nothing breaks.
-
-> [!NOTE]
-> Censoring is **presentational**. A dead NPC's name is never rendered as list
-> text, but it is still present in the page's RSC payload and readable straight
-> from `final_event/characters.json`, which is public. If a censored name must
-> genuinely stay secret, don't store it — `censorWidthCh()` only needs the
-> name's length.
 
 These rules are **not deployed** — applying them needs console access:
 

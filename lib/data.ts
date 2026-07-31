@@ -26,9 +26,9 @@ export interface Character {
   role: string;
   status: CharacterStatus;
   /**
-   * NPCs are dimmed in the roster, and a *dead* NPC has their name redacted
-   * entirely — "Npc - Alive if Dead, will censor" in the legend. NPC-ness is
-   * independent of aliveness, so it is a flag rather than a fourth status.
+   * NPCs are dimmed in the roster, and a *dead* NPC has their name struck
+   * through — "Npc - Alive if Dead" in the legend. NPC-ness is independent of
+   * aliveness, so it is a flag rather than a fourth status.
    *
    * This is also what separates the two ways into the roster: every seeded
    * character is an NPC, and everyone who submits the form is a player.
@@ -60,7 +60,7 @@ export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
 // rest of the credits list is generated from the name pools below.
 //
 // Like every seeded entry they are NPCs, so Jeffrey McPine — the one dead
-// name here — renders as a redaction bar rather than as text.
+// name here — renders struck through.
 const FEATURED_CHARACTERS: Character[] = [
   {
     id: "c01",
@@ -210,13 +210,12 @@ function shuffle<T>(items: T[], rand: () => number): T[] {
 }
 
 /**
- * Share of seeded NPCs that are dead, and therefore censored in the roll.
+ * Share of seeded NPCs that are dead, and therefore struck through in the roll.
  *
  * Seeded NPCs carry only alive/dead, so the roster's original alive:dead
  * balance of 42:38 becomes 38/(42+38) here — the same proportion with `lost`
  * folded away. Because every seeded entry is an NPC, this doubles as the share
- * of the credits roll that renders as redaction bars; lower it to show more
- * names.
+ * of the credits roll that renders struck through.
  */
 const NPC_DEAD_RATE = 0.475;
 
