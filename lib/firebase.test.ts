@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   CHARACTERS_PATH,
-  DEFAULT_ROLE,
   ITEMS_PATH,
   toCharacter,
   toCharacters,
   toItem,
   toItems,
 } from '@/lib/firebase';
+import { NPC_ROLE, PLAYER_ROLE } from '@/lib/data';
 
 // Records under final_event/ are hand-editable in the Firebase console and the
 // database is shared with another app, so the mappers are the boundary that
@@ -83,7 +83,7 @@ describe('the client layer with no configuration', () => {
 describe('toCharacter', () => {
   const valid = {
     name: 'Erin Giver',
-    role: DEFAULT_ROLE,
+    role: NPC_ROLE,
     status: 'dead',
     isNpc: true,
   };
@@ -92,7 +92,7 @@ describe('toCharacter', () => {
     expect(toCharacter('c007', valid)).toEqual({
       id: 'c007',
       name: 'Erin Giver',
-      role: DEFAULT_ROLE,
+      role: NPC_ROLE,
       status: 'dead',
       isNpc: true,
     });
@@ -121,12 +121,20 @@ describe('toCharacter', () => {
     );
   });
 
-  it('defaults role and treats isNpc as strictly boolean', () => {
+  it('defaults role to the side of the roster the entry is on', () => {
+    expect(toCharacter('c1', { name: 'A', isNpc: true })?.role).toBe(NPC_ROLE);
+    expect(toCharacter('-Oy1', { name: 'A', isNpc: false })?.role).toBe(
+      PLAYER_ROLE,
+    );
+  });
+
+  it('treats isNpc as strictly boolean', () => {
     const mapped = toCharacter('c1', { name: 'A', isNpc: 'yes' });
-    expect(mapped?.role).toBe(DEFAULT_ROLE);
-    // A truthy non-boolean must not make someone an NPC — that would censor
-    // them if they were also dead (see lib/censor.ts).
+    // A truthy non-boolean must not make someone an NPC — that would strike
+    // them through if they were also dead (see lib/censor.ts), and would give
+    // them the wrong role.
     expect(mapped?.isNpc).toBe(false);
+    expect(mapped?.role).toBe(PLAYER_ROLE);
   });
 });
 

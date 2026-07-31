@@ -27,8 +27,8 @@
 // ---------------------------------------------------------------------------
 
 import {
-  DEFAULT_ROLE,
   getMockCharacters,
+  roleFor,
   type Character,
   type CharacterStatus,
 } from './data';
@@ -58,11 +58,6 @@ export function isFirebaseConfigured(): boolean {
   return Boolean(firebaseConfig.apiKey && firebaseConfig.databaseURL);
 }
 
-/**
- * Re-exported so the write path and the mappers below share one definition with
- * the seed roster. Changing the wording is a one-line edit in lib/data.ts.
- */
-export { DEFAULT_ROLE };
 
 const VALID_STATUSES: CharacterStatus[] = ['alive', 'dead', 'lost'];
 
@@ -76,9 +71,9 @@ function toStatus(raw: unknown): CharacterStatus {
  * Map one raw `final_event/characters/<key>` record onto the UI's Character.
  *
  * Records are hand-editable in the Firebase console, so nothing is trusted:
- * a missing status falls back to alive, a missing role to the default, and an
- * entry with no usable name is dropped by returning null rather than rendering
- * a blank line in the credits roll.
+ * a missing status falls back to alive, a missing role to whichever side of the
+ * roster the entry is on, and an entry with no usable name is dropped by
+ * returning null rather than rendering a blank line in the credits roll.
  */
 export function toCharacter(key: string, raw: unknown): Character | null {
   if (!raw || typeof raw !== 'object') return null;
@@ -87,12 +82,14 @@ export function toCharacter(key: string, raw: unknown): Character | null {
   const name = typeof record.name === 'string' ? record.name.trim() : '';
   if (!name) return null;
 
+  const isNpc = record.isNpc === true;
+
   return {
     id: key,
     name,
-    role: typeof record.role === 'string' ? record.role : DEFAULT_ROLE,
+    role: typeof record.role === 'string' ? record.role : roleFor(isNpc),
     status: toStatus(record.status),
-    isNpc: record.isNpc === true,
+    isNpc,
   };
 }
 

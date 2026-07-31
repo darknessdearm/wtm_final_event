@@ -26,7 +26,6 @@ import {
 } from 'firebase/database';
 import {
   CHARACTERS_PATH,
-  DEFAULT_ROLE,
   ITEMS_PATH,
   findPlayerKey,
   firebaseConfig,
@@ -34,7 +33,7 @@ import {
   toCharacters,
   toItems,
 } from './firebase';
-import type { Character, CharacterStatus } from './data';
+import { PLAYER_ROLE, type Character, type CharacterStatus } from './data';
 import type { Item } from './items';
 
 /** Detaches a listener. Safe to call more than once. */
@@ -144,7 +143,7 @@ export async function submitCharacter(entry: {
 
   await push(charactersRef, {
     name: entry.name,
-    role: DEFAULT_ROLE,
+    role: PLAYER_ROLE,
     status: entry.status,
     // Submissions come from the public form, so they are never NPCs and are
     // never struck through — see lib/censor.ts.
