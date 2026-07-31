@@ -7,18 +7,11 @@ import SubmitBar from "@/components/SubmitBar";
 import type { Character } from "@/lib/data";
 import { subscribeToCharacters } from "@/lib/firebaseClient";
 
-/** Split the cast into three roughly equal columns. */
-function intoColumns(characters: Character[]): Character[][] {
-  const size = Math.ceil(characters.length / 3);
-  return [
-    characters.slice(0, size),
-    characters.slice(size, size * 2),
-    characters.slice(size * 2),
-  ];
-}
-
-// Slightly different loop lengths per column so they don't scroll in lockstep.
-const COLUMN_DURATIONS = [82, 96, 74];
+// Seconds each name spends crossing the viewport. The roll is one column on
+// every breakpoint now, so the loop has to grow with the cast to keep a
+// readable pace — this matches the ~2.2s per name the old three-column layout
+// scrolled at, rather than tripling the speed to fit the same loop length.
+const SECONDS_PER_NAME = 2.2;
 
 export default function SurvivalList({
   characters,
@@ -47,8 +40,6 @@ export default function SurvivalList({
     });
   }, []);
 
-  const columns = intoColumns(roster);
-
   return (
     <section className="mt-16 sm:mt-24">
       <h2 className="text-window text-scene">Survival List</h2>
@@ -56,17 +47,12 @@ export default function SurvivalList({
 
       <StatusLegend />
 
-      <div className="frame-dashed mt-6 grid grid-cols-1 gap-x-8 p-4 sm:grid-cols-3 sm:p-6">
-        {columns.map((column, i) => (
-          <CreditsRoll
-            key={i}
-            characters={column}
-            durationSec={COLUMN_DURATIONS[i]}
-            className="h-[320px] sm:h-[480px]"
-            columnIndex={i}
-            columnCount={columns.length}
-          />
-        ))}
+      <div className="frame-dashed mt-6 p-4 sm:p-6">
+        <CreditsRoll
+          characters={roster}
+          durationSec={Math.round(roster.length * SECONDS_PER_NAME)}
+          className="h-[320px] text-center sm:h-[480px]"
+        />
       </div>
 
       <SubmitBar

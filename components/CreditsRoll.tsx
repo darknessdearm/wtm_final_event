@@ -82,10 +82,13 @@ export default function CreditsRoll({
   const duration =
     durationSec ?? Math.max(40, Math.round(characters.length * 0.9));
   const trackStyle = { "--credits-duration": `${duration}s` } as CSSProperties;
+  // The roster is a single column now, so the plain label is the usual one.
+  // The indexed form stays for a multi-column layout, where each viewport needs
+  // to be distinguishable.
   const label =
     columnIndex !== undefined && columnCount !== undefined
       ? `Survival list column ${columnIndex + 1} of ${columnCount}`
-      : "Survival list column";
+      : "Survival list";
 
   return (
     <div
