@@ -6,6 +6,7 @@ import StatusLegend from "@/components/StatusLegend";
 import SubmitBar from "@/components/SubmitBar";
 import type { Character } from "@/lib/data";
 import { subscribeToCharacters } from "@/lib/firebaseClient";
+import { upsertByName } from "@/lib/roster";
 
 // Seconds each name spends crossing the viewport. The roll is one column on
 // every breakpoint now, so the loop has to grow with the cast to keep a
@@ -61,9 +62,10 @@ export default function SurvivalList({
           // resolves, so the subscription has already delivered this entry by
           // the time SubmitBar calls back — inserting it again would show the
           // name twice, and it would stay doubled until the next snapshot.
-          // Only the offline path still needs the local insert.
+          // Only the offline path still needs the local insert, and it upserts
+          // by name for the same reason submitCharacter() does.
           if (isLive.current) return;
-          setRoster((prev) => [character, ...prev]);
+          setRoster((prev) => upsertByName(prev, character));
         }}
       />
     </section>

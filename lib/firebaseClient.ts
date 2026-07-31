@@ -15,17 +15,20 @@
 
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 import {
+  get,
   getDatabase,
   onValue,
   push,
   ref,
   serverTimestamp,
+  update,
   type Database,
 } from 'firebase/database';
 import {
   CHARACTERS_PATH,
   DEFAULT_ROLE,
   ITEMS_PATH,
+  findPlayerKey,
   firebaseConfig,
   isFirebaseConfigured,
   toCharacters,
@@ -103,7 +106,12 @@ export function subscribeToItems(
 }
 
 /**
- * Append a submitted character to the roster.
+ * Record a submitted character.
+ *
+ * Submitting a name that is already on the roster updates that player's status
+ * rather than adding a second line for them, so someone can correct themselves
+ * — or die later in the event — without the roster filling up with duplicates.
+ * A name not seen before is appended.
  *
  * Resolves without writing when Firebase isn't configured, which keeps the
  * submit bar working on the bundled data. Rejects on a real write failure —
@@ -116,12 +124,30 @@ export async function submitCharacter(entry: {
   const db = getDb();
   if (!db) return;
 
-  await push(ref(db, CHARACTERS_PATH), {
+  const charactersRef = ref(db, CHARACTERS_PATH);
+
+  // Read-then-write rather than a query: matching is case-insensitive, which
+  // Realtime Database can't express server-side, and the roster is small enough
+  // that scanning it costs less than maintaining a normalized name index.
+  const snapshot = await get(charactersRef);
+  const existingKey = findPlayerKey(snapshot.val(), entry.name);
+
+  if (existingKey) {
+    // Only the status moves. The stored name keeps its original spelling, and
+    // isNpc is left alone so this can never promote a player into the cast.
+    await update(ref(db, `${CHARACTERS_PATH}/${existingKey}`), {
+      status: entry.status,
+      updatedAt: serverTimestamp(),
+    });
+    return;
+  }
+
+  await push(charactersRef, {
     name: entry.name,
     role: DEFAULT_ROLE,
     status: entry.status,
     // Submissions come from the public form, so they are never NPCs and are
-    // never censored — see lib/censor.ts.
+    // never struck through — see lib/censor.ts.
     isNpc: false,
     createdAt: serverTimestamp(),
   });

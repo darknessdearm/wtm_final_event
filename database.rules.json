@@ -41,10 +41,12 @@
         ".read": true,
 
         "$entry": {
-          // Create-only. A visitor can add a name but can never edit or
-          // delete one, so the roster cannot be vandalised or wiped from a
-          // browser. This is also what blocks the seed script.
-          ".write": "!data.exists() && newData.exists()",
+          // Create, or re-submit to change a status. Never delete (newData
+          // must exist), never rename, and never flip isNpc — so an entry can
+          // only ever move between the three statuses, and a player can't be
+          // promoted into the cast. This is also what blocks the seed script's
+          // bulk writes.
+          ".write": "newData.exists() && (!data.exists() || (newData.child('name').val() == data.child('name').val() && newData.child('isNpc').val() == data.child('isNpc').val()))",
           ".validate": "newData.hasChildren(['name', 'status'])",
 
           "name": {
@@ -61,7 +63,13 @@
           "isNpc": {
             ".validate": "newData.isBoolean() && newData.val() == false"
           },
+          // Set once at creation and immutable afterwards. Without the
+          // ternary an update would fail this, because a re-submit leaves the
+          // original timestamp in place rather than writing `now`.
           "createdAt": {
+            ".validate": "data.exists() ? newData.val() == data.val() : newData.val() == now"
+          },
+          "updatedAt": {
             ".validate": "newData.val() == now"
           },
 

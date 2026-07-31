@@ -32,6 +32,7 @@ import {
   type CharacterStatus,
 } from './data';
 import { normalizeImgUrl, type Item } from './items';
+import { sameName } from './validateName';
 
 /** Every path this site touches hangs off here. Nothing above it is ours. */
 export const FINAL_EVENT_ROOT = 'final_event';
@@ -124,6 +125,28 @@ export function toItem(key: string, raw: unknown): Item | null {
     ishidden: record.ishidden === true,
     isLocked: record.isLocked === true,
   };
+}
+
+/**
+ * Key of the existing *player* entry with this name, or null if there isn't one.
+ *
+ * Re-submitting a name updates that player's status instead of adding a second
+ * line for them. Seeded NPCs are deliberately skipped: the public form must
+ * never be able to take over a name from the cast, or flip a censored NPC's
+ * status by guessing it. Matching is case-insensitive — see sameName().
+ */
+export function findPlayerKey(value: unknown, name: string): string | null {
+  if (!value || typeof value !== 'object') return null;
+
+  for (const [key, raw] of Object.entries(value as Record<string, unknown>)) {
+    if (!raw || typeof raw !== 'object') continue;
+    const record = raw as Record<string, unknown>;
+    if (record.isNpc === true) continue;
+    if (typeof record.name !== 'string') continue;
+    if (sameName(record.name, name)) return key;
+  }
+
+  return null;
 }
 
 /** Map a whole `final_event/items` snapshot. */
