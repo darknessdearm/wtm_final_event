@@ -22,7 +22,7 @@ export interface Character {
   id: string;
   /** ชื่อตัวละคร */
   name: string;
-  /** บทบาท เช่น ตัวประกอบฉาก */
+  /** บทบาท — NPC_ROLE for the seeded cast, PLAYER_ROLE for submissions. */
   role: string;
   status: CharacterStatus;
   /**
@@ -62,6 +62,25 @@ export const EVENT_DESCRIPTION = "สุ่มสถานการณ์ปร�
 /** Small subtitle under the countdown showing the event window. */
 export const EVENT_WINDOW_LABEL = "Event Duration: August 01 - 21, 2026";
 
+/**
+ * บทบาท, which follows the same split as isNpc: the seeded cast are extras,
+ * and anyone who comes in through the submit form is a player.
+ *
+ * Defined here and imported everywhere rather than repeated as literals, so
+ * the wording can change in one place. Never rendered — the credits roll shows
+ * names only — so this is stored data.
+ *
+ * Changing either value does NOT rewrite rows already in the database; re-seed
+ * with `npm run seed -- --force` to bring the stored roster in line.
+ */
+export const NPC_ROLE = "ตัวประกอบฉาก";
+export const PLAYER_ROLE = "ผู้เล่น";
+
+/** The role an entry should carry, given which side of the roster it is on. */
+export function roleFor(isNpc: boolean): string {
+  return isNpc ? NPC_ROLE : PLAYER_ROLE;
+}
+
 /** Short Thai word for each status — used for the status <option> labels in SubmitBar. */
 export const STATUS_SHORT_LABEL: Record<CharacterStatus, string> = {
   alive: "Alive",
@@ -78,28 +97,28 @@ const FEATURED_CHARACTERS: Character[] = [
   {
     id: "c01",
     name: "Jeffrey McPine",
-    role: "ตัวประกอบฉาก",
+    role: NPC_ROLE,
     status: "dead",
     isNpc: true,
   },
   {
     id: "c02",
     name: "Charlie Kiddington",
-    role: "ตัวประกอบฉาก",
+    role: NPC_ROLE,
     status: "alive",
     isNpc: true,
   },
   {
     id: "c03",
     name: "Felico Wise",
-    role: "ตัวประกอบฉาก",
+    role: NPC_ROLE,
     status: "alive",
     isNpc: true,
   },
   {
     id: "c04",
     name: "RedWood [sk'aWk'os]",
-    role: "ตัวประกอบฉาก",
+    role: NPC_ROLE,
     status: "alive",
     isNpc: true,
   },
@@ -260,7 +279,7 @@ function generateCharacters(
     out.push({
       id: `g${String(++n).padStart(3, "0")}`,
       name,
-      role: "ตัวประกอบฉาก",
+      role: NPC_ROLE,
       status,
       isNpc: true,
     });

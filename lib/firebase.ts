@@ -28,10 +28,12 @@
 
 import {
   getMockCharacters,
+  roleFor,
   type Character,
   type CharacterStatus,
 } from './data';
 import { normalizeImgUrl, type Item } from './items';
+import { sameName } from './validateName';
 
 /** Every path this site touches hangs off here. Nothing above it is ours. */
 export const FINAL_EVENT_ROOT = 'final_event';
@@ -56,8 +58,6 @@ export function isFirebaseConfigured(): boolean {
   return Boolean(firebaseConfig.apiKey && firebaseConfig.databaseURL);
 }
 
-/** Role given to entries that don't carry one — every seeded character has it. */
-export const DEFAULT_ROLE = 'ตัวประกอบฉาก';
 
 const VALID_STATUSES: CharacterStatus[] = ['alive', 'dead', 'lost'];
 
@@ -71,9 +71,9 @@ function toStatus(raw: unknown): CharacterStatus {
  * Map one raw `final_event/characters/<key>` record onto the UI's Character.
  *
  * Records are hand-editable in the Firebase console, so nothing is trusted:
- * a missing status falls back to alive, a missing role to the default, and an
- * entry with no usable name is dropped by returning null rather than rendering
- * a blank line in the credits roll.
+ * a missing status falls back to alive, a missing role to whichever side of the
+ * roster the entry is on, and an entry with no usable name is dropped by
+ * returning null rather than rendering a blank line in the credits roll.
  */
 export function toCharacter(key: string, raw: unknown): Character | null {
   if (!raw || typeof raw !== 'object') return null;
@@ -82,12 +82,14 @@ export function toCharacter(key: string, raw: unknown): Character | null {
   const name = typeof record.name === 'string' ? record.name.trim() : '';
   if (!name) return null;
 
+  const isNpc = record.isNpc === true;
+
   return {
     id: key,
     name,
-    role: typeof record.role === 'string' ? record.role : DEFAULT_ROLE,
+    role: typeof record.role === 'string' ? record.role : roleFor(isNpc),
     status: toStatus(record.status),
-    isNpc: record.isNpc === true,
+    isNpc,
   };
 }
 
@@ -124,6 +126,28 @@ export function toItem(key: string, raw: unknown): Item | null {
     ishidden: record.ishidden === true,
     isLocked: record.isLocked === true,
   };
+}
+
+/**
+ * Key of the existing *player* entry with this name, or null if there isn't one.
+ *
+ * Re-submitting a name updates that player's status instead of adding a second
+ * line for them. Seeded NPCs are deliberately skipped: the public form must
+ * never be able to take over a name from the cast, or flip a censored NPC's
+ * status by guessing it. Matching is case-insensitive — see sameName().
+ */
+export function findPlayerKey(value: unknown, name: string): string | null {
+  if (!value || typeof value !== 'object') return null;
+
+  for (const [key, raw] of Object.entries(value as Record<string, unknown>)) {
+    if (!raw || typeof raw !== 'object') continue;
+    const record = raw as Record<string, unknown>;
+    if (record.isNpc === true) continue;
+    if (typeof record.name !== 'string') continue;
+    if (sameName(record.name, name)) return key;
+  }
+
+  return null;
 }
 
 /** Map a whole `final_event/items` snapshot. */

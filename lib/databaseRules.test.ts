@@ -127,12 +127,40 @@ describe('database.rules.json', () => {
     }
   });
 
-  it('makes roster submissions create-only', () => {
+  it('allows a status re-submit but never a delete, rename or npc flip', () => {
     const entry = (
       (rules.final_event as Node).characters as Node
     ).$entry as Node;
-    // No edit, no delete: data must not already exist, and must exist after.
-    expect(entry['.write']).toBe('!data.exists() && newData.exists()');
+    const write = entry['.write'] as string;
+
+    // newData must exist, so an entry can never be removed from a browser.
+    expect(write).toContain('newData.exists()');
+    // Either it's new, or the identity fields are carried through unchanged.
+    expect(write).toContain('!data.exists()');
+    expect(write).toContain(
+      "newData.child('name').val() == data.child('name').val()",
+    );
+    expect(write).toContain(
+      "newData.child('isNpc').val() == data.child('isNpc').val()",
+    );
+  });
+
+  it('keeps createdAt immutable across a re-submit', () => {
+    const entry = (
+      (rules.final_event as Node).characters as Node
+    ).$entry as Node;
+    // A plain `== now` here would reject every update, since a re-submit
+    // leaves the original timestamp in place.
+    expect((entry.createdAt as Node)['.validate']).toBe(
+      'data.exists() ? newData.val() == data.val() : newData.val() == now',
+    );
+  });
+
+  it('declares updatedAt, which $other would otherwise reject', () => {
+    const entry = (
+      (rules.final_event as Node).characters as Node
+    ).$entry as Node;
+    expect(entry.updatedAt).toBeDefined();
   });
 
   it('accepts all three player statuses and pins isNpc to false', () => {
