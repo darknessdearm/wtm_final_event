@@ -64,7 +64,6 @@ function useColumnCount(): number {
   return columns;
 }
 
-
 export default function SurvivalList({
   characters,
 }: {
@@ -99,9 +98,7 @@ export default function SurvivalList({
     <section className="mt-16 sm:mt-24">
       <h2 className="text-window text-scene">Survival List</h2>
       <hr className="mt-4 h-px border-0 bg-scene-rule" />
-
       <StatusLegend />
-
       <div
         className="frame-dashed mt-6 grid gap-x-8 p-4 sm:p-6"
         // Inline rather than a Tailwind class: the count is decided at runtime,
@@ -131,8 +128,8 @@ export default function SurvivalList({
           />
         ))}
       </div>
-
-      <SubmitBar
+      // Close Form
+      {/* <SubmitBar
         onSubmitted={(character) => {
           // Firebase applies a write to its local cache *before* push()
           // resolves, so the subscription has already delivered this entry by
@@ -143,7 +140,7 @@ export default function SurvivalList({
           if (isLive.current) return;
           setRoster((prev) => upsertByName(prev, character));
         }}
-      />
+      /> */}
     </section>
   );
 }
